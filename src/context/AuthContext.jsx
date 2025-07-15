@@ -20,10 +20,12 @@ export const AuthContextProvider = ({children})=>{
         phone: '',
         dob: '',
         role: 'admin',
-        specialization_id: '',
+        specialization_id: [],
+        specialization : [],
         experience: '',
         history: ''
       });
+      console.log(signupInfo);
       const [loginSuccess, setLoginSuccess] = useState(false);
       const [loginError , setLoginError] = useState(null);
       const [isLoginLoading , setIsLoginLoading] = useState(false);
@@ -37,7 +39,7 @@ export const AuthContextProvider = ({children})=>{
             setUser(user)
         }
       }, [])
-      
+
       useEffect(() => {
         api.get(GET_SPECIALIZATIONS_URL)
         .then(response => {
@@ -76,7 +78,7 @@ export const AuthContextProvider = ({children})=>{
         setSignupError(null);
         setSignupSuccess(false);
         try {
-          
+
           const res = await signup(signupInfo);
           setSignupSuccess(true)
           localStorage.setItem('User',JSON.stringify(res));
@@ -112,7 +114,8 @@ export const AuthContextProvider = ({children})=>{
           phone: '',
           dob: '',
           role: 'admin',
-          specialization_id: '',
+          specialization_id: [],
+          specialization: [],
           experience: '',
           history: ''
         });
