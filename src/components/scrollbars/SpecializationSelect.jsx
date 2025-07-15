@@ -19,4 +19,4 @@ const SpecializationSelect = ({label,name,list,value,onChange,required,allowMult
   )
 }
 
-export default SpecializationSelect
+export default SpecializationSelect;
