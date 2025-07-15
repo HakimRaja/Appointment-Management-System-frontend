@@ -1,41 +1,29 @@
-import React, { useContext, useState } from 'react'
-import { Link } from 'react-router-dom';
 import Input from '../input/Input';
 import Button from '../buttons/Button';
+import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
 import { AuthContext} from '../../context/AuthContext';
+import { LOGIN_FIELDS } from '../../constants/loginFields';
 
 const LoginForm = () => {
   const {loginInfo ,loginError,loginSuccess,isLoginLoading , loginUser,updateLoginInfo } = useContext(AuthContext);
-  const [data,setData] = useState({
-      email: '',
-      password: ''
-    });
     const handleChange = (e)=>{
       updateLoginInfo({...loginInfo ,[e.target.name] : e.target.value});
     }
-  // console.log(data);
     
     return (
       <>
       <form onSubmit={loginUser}>
         <Input
-        label='Email'
-        type='email'
-        name='email'
-        placeholder='Email'
+        {...LOGIN_FIELDS.email}
         value={loginInfo.email}
         onChange={handleChange}
-        required={true}
         />
 
         <Input
-        label='Password'
-        type='password'
-        name='password'
-        placeholder='password'
+        {...LOGIN_FIELDS.password}
         value={loginInfo.password}
         onChange={handleChange}
-        required={true}
         />
 
         <Button type='submit'>{isLoginLoading ? 'Logging into your account' : 'Login'}</Button>

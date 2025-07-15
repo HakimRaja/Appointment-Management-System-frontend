@@ -6,85 +6,74 @@ import SpecializationSelect from '../scrollbars/SpecializationSelect';
 import { checkPhoneNumber } from '../../services/helper/authHelper';
 import { AuthContext} from '../../context/AuthContext';
 import {Link} from 'react-router-dom';
+import { SIGNUP_FIELDS } from '../../constants/signupFields';
+import Radio from '../radiobuttons/Radio';
 
 const SignupForm = () => {
   const {medicalSpecializations , signupInfo ,signupError,signupSuccess,isSignupLoading , signupUser,updateSignupInfo } = useContext(AuthContext);
   const handleChange = (e)=>{
-    updateSignupInfo({...signupInfo , [e.target.name] : e.target.value})
+    if (e.target.multiple) {
+      const selectedSpecializations = Array.from(e.target.selectedOptions).map(option => option.value);
+      updateSignupInfo({...signupInfo , [e.target.name] : selectedSpecializations})
+    }
+    else{
+      updateSignupInfo({...signupInfo , [e.target.name] : e.target.value})
+    }
   }
 
   return (
     <>
     <form onSubmit={signupUser}>
       <Input
-        label='Name'
-        type='text'
-        name='name'
-        placeholder='Name'
+        {...SIGNUP_FIELDS.name}
         value={signupInfo.name}
         onChange={handleChange}
-        required={true}
         />
      
       <Input
-        label='Email'
-        type='email'
-        name='email'
-        placeholder='Email'
+        {...SIGNUP_FIELDS.email}
         value={signupInfo.email}
         onChange={handleChange}
-        required={true}
         />
       <Input
-        label='Password'
-        type='password'
-        name='password'
-        placeholder='password'
+        {...SIGNUP_FIELDS.password}
         value={signupInfo.password}
         onChange={handleChange}
-        required={true}
         />
       <Input
-        label='Phone Number'
-        type='text'
-        name='phone'
-        placeholder='03********* (11 digit phone number)'
+        {...SIGNUP_FIELDS.phone}
         value={signupInfo.phone}
         onChange={handleChange}
-        required={true}
         />
     <DateInput
-    label = 'Date of Birth'
-    required={true}
-    name='dob'
+    {...SIGNUP_FIELDS.dob}
     onChange={(date,dateString) => updateSignupInfo({...signupInfo,dob:dateString})}
     value={signupInfo.dob}
     />
-          
-      <label className='font-semibold '>Select Role</label>
-      <div className='flex gap-4'>
-          {['admin','doctor','patient'].map((role)=>(
-            <label key={role}>
-              <input type="radio" name='role' value={role} checked={signupInfo.role === role} onChange={handleChange} />{role}
-            </label>
-          ))}
-      </div>
+
+      <Radio
+        {...SIGNUP_FIELDS.roleSelect}
+        array={SIGNUP_FIELDS.roles}
+        checked={signupInfo.role}
+        onChange={handleChange}
+      />
+      
 
       {signupInfo.role === 'doctor' && (
         <>
       <DateInput
-    label = 'Experience'
-    required={true}
-    name='experience'
+    {...SIGNUP_FIELDS.experience}
     onChange={(date,dateString) => updateSignupInfo({...signupInfo,experience:dateString})}
     value={signupInfo.experience}
     />
     <SpecializationSelect
-    label='Specialization'
-    required={true}
-    name='specialization_id'
-    value={signupInfo.specialization_id}
-    onChange={handleChange}
+    {...SIGNUP_FIELDS.specialization}
+    value={signupInfo.specialization}
+    onChange={(selectedOptions) =>{
+        selectedOptions = selectedOptions || [];
+        const ids = selectedOptions.map(opt => opt.value)
+        updateSignupInfo({...signupInfo,specialization : selectedOptions,specialization_id : ids})
+    }}
     list={medicalSpecializations}
     />
       </>
@@ -92,13 +81,9 @@ const SignupForm = () => {
       )}
       {signupInfo.role === 'patient' && (
         <Input
-        label='Patient History'
-        type='text'
-        name='history'
-        placeholder='Write your disease history'
+        {...SIGNUP_FIELDS.history}
         value={signupInfo.history}
         onChange={handleChange}
-        required={true}
         />
       )}
 
