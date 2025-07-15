@@ -14,7 +14,7 @@ const SpecializationSelect = ({label,name,list,value,onChange,required}) => {
             <option value="" disabled>-- Choose a specialization --</option>
             {
                 list.map((speciality,index)=>{
-                    return <option key={index} value={speciality} >{speciality}</option>
+                    return <option key={index} value={speciality.specialization_id} >{speciality.title}</option>
                 })
             }
         </select>
