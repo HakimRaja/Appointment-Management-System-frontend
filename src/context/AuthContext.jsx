@@ -1,9 +1,11 @@
 import React,{createContext,useState,useEffect,useContext, use} from "react";
 import api from "../api/api";
+import { login, signup } from "../services/authServices";
 
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({children})=>{
+    const GET_SPECIALIZATIONS_URL = '/auth/specializations';
     const [medicalSpecializations,setMedicalSpecializations] = useState([]);//for signup
 
     const [user,setUser] = useState(null);
@@ -29,7 +31,6 @@ export const AuthContextProvider = ({children})=>{
         email : '',
         password : ''
       })
-      // console.log(signupInfo);
       useEffect(() => { //setting up the user
         const user = JSON.parse(localStorage.getItem('User'));
         if (user) {
@@ -38,7 +39,7 @@ export const AuthContextProvider = ({children})=>{
       }, [])
       
       useEffect(() => {
-        api.get('/auth/specializations')
+        api.get(GET_SPECIALIZATIONS_URL)
         .then(response => {
             setMedicalSpecializations(response.data.specializations)
         })
@@ -55,25 +56,12 @@ export const AuthContextProvider = ({children})=>{
         setLoginSuccess(false);
         try {
           
-          const res = await api.post('/auth/login',loginInfo);
-          // if (!res?.message) {
-          //   throw error;
-          // }
+          const res = await login(loginInfo);
           setLoginSuccess(true)
-          localStorage.setItem('User',JSON.stringify(res.data
-            // userId : res?.userId,
-            // email : res?.email,
-            // name : res?.name,
-            // token : res?.token,
-            // role : res?.role
-          ));
-          setUser(res.data);
-          // alert(res?.message);
-
-          navigate('/');
+          localStorage.setItem('User',JSON.stringify(res));
+          setUser(res);
         } catch (error) {
-          // alert(error?.message || 'Signup Failed');
-          const errmsg = error?.response?.data?.message || error?.message || 'Login Failed';
+          const errmsg = error;
           setLoginError(errmsg);
         }
         finally{
@@ -89,17 +77,12 @@ export const AuthContextProvider = ({children})=>{
         setSignupSuccess(false);
         try {
           
-          const res = await api.post('/auth/signup',signupInfo);
-          // if (!res?.message) {
-          //   throw error;
-          // }
+          const res = await signup(signupInfo);
           setSignupSuccess(true)
-          localStorage.setItem('User',JSON.stringify(res?.data));
-          setUser(res.data);
-          // alert(res?.message);
+          localStorage.setItem('User',JSON.stringify(res));
+          setUser(res);
         } catch (error) {
-          // alert(error?.message || 'Signup Failed');
-          const errmsg = error?.response?.data?.message || error?.message || 'Signup Failed';
+          const errmsg = error;
           console.log(error);
           setSignupError(errmsg);
         }

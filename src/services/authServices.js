@@ -1,27 +1,28 @@
 import api from "../api/api";
 
-export const signupUser = async(data) =>{
+
+
+export const signup = async(data) =>{
+    const SIGNUP_URL = '/auth/signup';
+    const SIGNUP_FAIL_MESSAGE = 'Sign up failed';
     try {
-        const response = await api.post('/auth/signup',data);
-        console.log(response.data);
+        const response = await api.post(SIGNUP_URL,data);
         return response.data;
     } catch (error) {
-        console.error('Login Failed',error.response?.data?.message || 'Sign up failed');
-        throw new Error(error.response?.data?.message || 'Sign up failed')
+        console.error('Signup Failed',error.response?.data?.message || 'Sign up failed');
+        throw new Error(error.response?.data?.message || SIGNUP_FAIL_MESSAGE)
     }
     
 }
 
-export const loginUser = async(data) =>{
+export const login = async(data) =>{
+    const LOGIN_URL = '/auth/login';
+    const LOGIN_FAIL_MESSAGE = 'Login failed';
     try {
-        const response = await api.post('/auth/login',data);
-        console.log(response.data);
-        // if (response.data.message) {
-        //     return response.data?.message;
-        // }
+        const response = await api.post(LOGIN_URL,data);
         return response.data;
     } catch (error) {
         console.error("Login failed:", error.response?.data?.message || error.message);
-        throw new Error(error.response?.data?.message || 'Login failed');
+        throw new Error(error.response?.data?.message || LOGIN_FAIL_MESSAGE);
     }
 }
