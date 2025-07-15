@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Input from '../input/Input';
 import Button from '../buttons/Button';
 import { AuthContext} from '../../context/AuthContext';
 
 const LoginForm = () => {
-  const {loginInfo ,loginError,loginSuccess,isLoginLoading , loginUser,updateLoginInfo } = useContext(AuthContext)
-  const navigate = useNavigate(); 
+  const {loginInfo ,loginError,loginSuccess,isLoginLoading , loginUser,updateLoginInfo } = useContext(AuthContext);
   const [data,setData] = useState({
       email: '',
       password: ''
@@ -40,7 +39,7 @@ const LoginForm = () => {
         />
 
         <Button type='submit'>{isLoginLoading ? 'Logging into your account' : 'Login'}</Button>
-        <div className='text-red-400 mx-auto hover:underline hover:text-red-500 transition ease-in-out'><a href="http://localhost:5173/signup" >go to signup page</a></div>
+        <div className='text-red-400 mx-auto hover:underline hover:text-red-500 transition ease-in-out'><Link to='/signup'>Go to signup page</Link></div>
       </form>
       {loginSuccess && (<span className='bg-green-300'>Login Successfull</span>)}
       {loginError && (<span className='bg-red-300'>{loginError}</span>)}
