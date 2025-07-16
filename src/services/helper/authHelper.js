@@ -24,11 +24,11 @@ export const getSignupInfo = (info) =>{
             return {check : false , message : 'please provide correct name without numbers'}
         }
     }
-    if (!(checkPhoneNumber(info.phone))) {
-        return {check : false , message : 'please provide correct phone number'}
-    }
-    else if (info.password.length < 8) {
+    if (info.password.length < 8) {
         return {check : false , message : 'password must contain atleast 8 letters/digits'}
+    }
+    else if (!(checkPhoneNumber(info.phone))) {
+        return {check : false , message : 'please provide correct phone number'}
     }
     else if (info.dob == '') {
         return {check : false , message : 'please enter Date of Birth'}
