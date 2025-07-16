@@ -6,13 +6,13 @@ import Home from '../pages/Home'
 import { AuthContext } from '../context/AuthContext'
 
 const AppRoutes = () => {
-    const {user}  =useContext(AuthContext);
+    const {isAuthenticated}  =useContext(AuthContext);
     return (
     <Router>
         <Routes>
-            <Route path='/' element={user ? <Home/>:<Navigate to='/login'/>}/>
-            <Route path='/signup' element={user ? <Navigate to='/'/>:<SignupPage/>}/>
-            <Route path='/login' element={user ? <Navigate to='/'/>:<LoginPage/>}/>
+            <Route path='/' element={isAuthenticated ? <Home/>:<Navigate to='/login'/>}/>
+            <Route path='/signup' element={isAuthenticated ? <Navigate to='/'/>:<SignupPage/>}/>
+            <Route path='/login' element={isAuthenticated ? <Navigate to='/'/>:<LoginPage/>}/>
             <Route path='*' element={<h1>Page Not Found</h1>}/>
             
         </Routes>

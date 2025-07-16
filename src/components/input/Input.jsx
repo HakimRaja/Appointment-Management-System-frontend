@@ -7,7 +7,7 @@ const Input = ({label,type,placeholder,name,value,required,onChange , labelClass
         <input type={type} 
         placeholder={placeholder}
         name={name}
-        value={value}
+        value={value || ''}
         required={required}
         onChange={onChange} className={inputClass ? inputClass:('w-full border p-2')}/>
     </div>

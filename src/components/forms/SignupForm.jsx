@@ -70,8 +70,7 @@ const SignupForm = () => {
     value={signupInfo.specialization}
     onChange={(selectedOptions) =>{
         selectedOptions = selectedOptions || [];
-        const ids = selectedOptions.map(opt => opt.value)
-        updateSignupInfo({...signupInfo,specialization : selectedOptions,specialization_id : ids})
+        updateSignupInfo({...signupInfo,specialization : selectedOptions})
     }}
     list={medicalSpecializations}
     />

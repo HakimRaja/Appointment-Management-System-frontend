@@ -1,13 +1,18 @@
 import React,{createContext,useState,useEffect,useContext, use} from "react";
 import api from "../api/api";
 import { login, signup } from "../services/authServices";
+import { getSignupInfo } from "../services/helper/authHelper";
 
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({children})=>{
     const GET_SPECIALIZATIONS_URL = '/auth/specializations';
+    const CHECK_AUTHENTICATION_URL = '/auth/authorized';
+    const SIGNUP_FAIL_MESSAGE = 'Signup failed';
+
     const [medicalSpecializations,setMedicalSpecializations] = useState([]);//for signup
 
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
     const [user,setUser] = useState(null);
 
     const [signupSuccess, setSignupSuccess] = useState(false);
@@ -20,11 +25,11 @@ export const AuthContextProvider = ({children})=>{
         phone: '',
         dob: '',
         role: 'admin',
-        specialization_id: [],
         specialization : [],
         experience: '',
         history: ''
       });
+
       console.log(signupInfo);
       const [loginSuccess, setLoginSuccess] = useState(false);
       const [loginError , setLoginError] = useState(null);
@@ -36,9 +41,27 @@ export const AuthContextProvider = ({children})=>{
       useEffect(() => { //setting up the user
         const user = JSON.parse(localStorage.getItem('User'));
         if (user) {
-            setUser(user)
+          api.get(CHECK_AUTHENTICATION_URL,{
+            headers : {
+              'Authorization' : `Bearer ${user.token}`
+            }
+          })
+          .then(response =>{
+            if (response?.data?.check) {
+              setUser(user);
+              setIsAuthenticated(true);
+            }
+          })
+          .catch(error =>{
+            setIsAuthenticated(false);
+            setUser(null);
+          })
         }
-      }, [])
+        else{
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      }, []);
 
       useEffect(() => {
         api.get(GET_SPECIALIZATIONS_URL)
@@ -62,8 +85,9 @@ export const AuthContextProvider = ({children})=>{
           setLoginSuccess(true)
           localStorage.setItem('User',JSON.stringify(res));
           setUser(res);
+          setIsAuthenticated(true);
         } catch (error) {
-          const errmsg = error;
+          const errmsg =error?.response?.data?.message || error?.message || SIGNUP_FAIL_MESSAGE;
           setLoginError(errmsg);
         }
         finally{
@@ -78,14 +102,18 @@ export const AuthContextProvider = ({children})=>{
         setSignupError(null);
         setSignupSuccess(false);
         try {
-
-          const res = await signup(signupInfo);
+          const info = getSignupInfo(signupInfo);
+          if (!info.check) {
+            throw (info.message);
+          }
+          console.log(info.data);
+          const res = await signup(info.data);
           setSignupSuccess(true)
           localStorage.setItem('User',JSON.stringify(res));
           setUser(res);
+          setIsAuthenticated(true);
         } catch (error) {
-          const errmsg = error;
-          console.log(error);
+          const errmsg =error?.response?.data?.message || error?.message || error || SIGNUP_FAIL_MESSAGE;
           setSignupError(errmsg);
         }
         finally{
@@ -103,6 +131,7 @@ export const AuthContextProvider = ({children})=>{
       const logoutUser = () =>{
         localStorage.removeItem('User');
         setUser(null);
+        setIsAuthenticated(false);
       }
       const clearSignupState = () => {
         setSignupSuccess(false);
@@ -114,7 +143,6 @@ export const AuthContextProvider = ({children})=>{
           phone: '',
           dob: '',
           role: 'admin',
-          specialization_id: [],
           specialization: [],
           experience: '',
           history: ''
@@ -145,7 +173,8 @@ export const AuthContextProvider = ({children})=>{
           updateSignupInfo,
           logoutUser,
           clearSignupState,
-          clearLoginState
+          clearLoginState,
+          isAuthenticated
           }}>
         {children}
       </AuthContext.Provider>
