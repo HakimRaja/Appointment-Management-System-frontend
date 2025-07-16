@@ -41,14 +41,14 @@ export const SIGNUP_FIELDS = {
 
     },
     experience : {
-        label : 'Experience',
+        label : 'Experience(Starting Date)',
         required:true,
         name:'experience'
     },
     specialization : {
         label:'Specialization',
         required:true,
-        name:'specialization_id',
+        name:'specialization',
         allowMultiple:true
     },
     history : {
