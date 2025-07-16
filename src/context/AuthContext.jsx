@@ -1,6 +1,6 @@
 import React,{createContext,useState,useEffect,useContext, use} from "react";
 import api from "../api/api";
-import { login, signup } from "../services/authServices";
+import { checkauthentication, login, signup } from "../services/authServices";
 import { getSignupInfo } from "../services/helper/authHelper";
 
 export const AuthContext = createContext();
@@ -39,28 +39,27 @@ export const AuthContextProvider = ({children})=>{
         password : ''
       })
       useEffect(() => { //setting up the user
-        const user = JSON.parse(localStorage.getItem('User'));
-        if (user) {
-          api.get(CHECK_AUTHENTICATION_URL,{
-            headers : {
-              'Authorization' : `Bearer ${user.token}`
+        const CheckAuthenticationFunc = async () => {
+          try {
+            const user = JSON.parse(localStorage.getItem('User'));
+            if (user) {
+              const response = await checkauthentication(user.token);
+              if (response?.check) {
+                setUser(user);
+                setIsAuthenticated(true)
+              }
+        }
+            else{
+              setUser(null);
+              setIsAuthenticated(false);
             }
-          })
-          .then(response =>{
-            if (response?.data?.check) {
-              setUser(user);
-              setIsAuthenticated(true);
-            }
-          })
-          .catch(error =>{
+          } catch (error) {
             setIsAuthenticated(false);
             setUser(null);
-          })
+          }
         }
-        else{
-          setUser(null);
-          setIsAuthenticated(false);
-        }
+        CheckAuthenticationFunc();
+
       }, []);
 
       useEffect(() => {
