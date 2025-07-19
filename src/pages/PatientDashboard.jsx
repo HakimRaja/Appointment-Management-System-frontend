@@ -2,6 +2,7 @@ import { IoPersonCircle } from "react-icons/io5";
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getDoctorsList } from '../services/patientDashboard';
+import PatientDashboardModal from "../components/modal/PatientDashboardModal";
 
 
 const PatientDashboard = () => { // now i have to integrate the backend in comming data
@@ -9,10 +10,11 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   const [doctorsInfo,setDoctorsInfo] = useState([]);
   const [doctorsInfoError,setDoctorsInfoError] = useState(null);
   const [isModalOpen,setIsModalOpen] = useState(false);
+  const [selectedDoctor , setSelectedDoctor] = useState(null);
 
-  const handleBookClick = () =>{
+  const handleBookClick = (doc) =>{
+    setSelectedDoctor(doc);
     setIsModalOpen(true);
-    
   };
   const handleCloseModal = ()=>{
     setIsModalOpen(false);
@@ -45,7 +47,11 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
                     <button onClick={handleBookClick} className='w-full my-4 p-2 bg-blue-500 rounded-full text-white hover:bg-blue-600 hover:scale-105 transition ease-in-out'>Book an Appointment</button>
                 </div>
             ))}
-            {/* {isModalOpen && } */}
+            {isModalOpen && <PatientDashboardModal
+            doc={doctorsInfo[0]}
+            handleCloseModal={handleCloseModal}
+            handleSelectButton={handleSelectButton}
+            />}
             {(doctorsInfoError || doctorsInfo.length == 0) && <h5 className='text-center'>No Doctors Found</h5>}
         </div>
     </div>
