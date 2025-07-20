@@ -1,7 +1,7 @@
 import { IoPersonCircle } from "react-icons/io5";
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { getDoctorsList } from '../services/patientDashboard';
+import { bookAppointment, getDoctorsList } from '../services/patientDashboard';
 import PatientDashboardModal from "../components/modal/PatientDashboardModal";
 
 
@@ -11,6 +11,8 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   const [doctorsInfoError,setDoctorsInfoError] = useState(null);
   const [isModalOpen,setIsModalOpen] = useState(false);
   const [selectedDoctor , setSelectedDoctor] = useState(null);
+  const [error,setError] = useState(null);
+  const [success,setSuccess] = useState(null);
 
   const handleBookClick = (doc) =>{
     setSelectedDoctor(doc);
@@ -18,8 +20,24 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   };
   const handleCloseModal = ()=>{
     setIsModalOpen(false);
+    setError(null);
+    setSuccess(null);
   }
-  const handleSelectButton = ()=>{
+  const handleSelectButton = async(slot)=>{
+    setError(null);
+    setSuccess(null);
+    console.log({slot,user_id : user.user_id})
+    if (!slot) {
+      console.log('please select a Slot')
+      return setError(`please select a Slot.`);
+    }
+    try {
+     const res = await bookAppointment(user?.token , slot?.value);
+      
+     setSuccess('Slot booked successfully.')
+    } catch (error) {
+      return setError(error?.response?.data?.message || error?.message || error);
+    }
     
   }
   
@@ -44,13 +62,15 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
                     <h5 className='font-semibold'>Phone : {doc.phone}</h5>  
                     <h5 className='font-semibold'>Specializations : {doc.specializations?.map((spec,index) => (<span key={index}> {spec} {index !== doc.specializations.length-1 ? ', ':``}</span>))}</h5>
                     <h5 className='font-semibold'>Experience : {<span>{doc?.experience[0]>=1 ? `${doc?.experience[0]} year and`:''} {doc?.experience[1]} months</span>}</h5>
-                    <button onClick={handleBookClick} className='w-full my-4 p-2 bg-blue-500 rounded-full text-white hover:bg-blue-600 hover:scale-105 transition ease-in-out'>Book an Appointment</button>
+                    <button onClick={() => handleBookClick(doc)} className='w-full my-4 p-2 bg-blue-500 rounded-full text-white hover:bg-blue-600 hover:scale-105 transition ease-in-out'>Book an Appointment</button>
                 </div>
             ))}
             {isModalOpen && <PatientDashboardModal
-            doc={doctorsInfo[0]}
+            doc={selectedDoctor}
             handleCloseModal={handleCloseModal}
             handleSelectButton={handleSelectButton}
+            error={error}
+            success={success}
             />}
             {(doctorsInfoError || doctorsInfo.length == 0) && <h5 className='text-center'>No Doctors Found</h5>}
         </div>

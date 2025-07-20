@@ -13,3 +13,17 @@ export const getDoctorsList = async(token) =>{
         throw error
     }
 }
+
+const BOOK_APPOINTMENT_URL = '/patientDashboard/book';
+export const bookAppointment = async(token,body)=>{
+    try {
+        const res = await api.post(BOOK_APPOINTMENT_URL,body,{
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            }
+        });
+        return res?.data;
+    } catch (error) {
+        throw error;
+    }
+}

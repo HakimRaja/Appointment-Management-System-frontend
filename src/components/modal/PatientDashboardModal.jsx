@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 import Select from 'react-select';
 
-const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton}) => {
+const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,success}) => {
     const availOptions = doc.availabilities.map(avail => ({
         label : `${avail.start_time}-${avail.end_time} On ${avail.date}`,
         value : avail.availability_id
     }))
+    
     const [selectedSlot,setSelectedSlot] = useState(null);
+    
+    console.log(selectedSlot?.value);
     return (
-    <div className='fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50'>
-        <div className='bg-white p-6 rounded-lg w-full max-w-md space-x-2'>
+    <div className='fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50'>
+        <div className='bg-white p-6 rounded-lg w-full max-w-md space-x-2 space-y-2'>
             <h1 className='font-semibold text-lg'>Doc. {doc?.name}</h1>
             <Select
             options={availOptions}
@@ -17,9 +20,11 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton}) => {
             onChange={setSelectedSlot}
             placeholder='Select a Slot'
             />
+            <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full p-2' onClick={handleCloseModal}>Close</button>
+            <button className='bg-blue-600 hover:bg-blue-700 transition ease-in-out text-white rounded-full p-2' onClick={()=>handleSelectButton(selectedSlot)}>Confirm Booking</button>
+            {error && (<p className='bg-red-400'>{error}</p>)}
+            {success && (<p className='bg-green-400'>{success}</p>)}
         </div>
-        <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full' onClick={handleCloseModal}>Close</button>
-        <button className='bg-blue-600 hover:bg-blue-700 transition ease-in-out text-white rounded-full' onClick={handleCloseModal}>Confirm Booking</button>
     </div>
   )
 }
