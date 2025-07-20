@@ -3,7 +3,7 @@ import Select from 'react-select';
 
 const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,success}) => {
     const availOptions = doc.availabilities.map(avail => ({
-        label : `${avail.start_time}-${avail.end_time} On ${avail.date}`,
+        label : `${avail.start_time}-${avail.end_time} On ${avail.date.slice(0,10)}`,
         value : avail.availability_id
     }))
     

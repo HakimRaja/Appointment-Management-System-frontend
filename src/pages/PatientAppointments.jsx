@@ -8,7 +8,7 @@ const PatientAppointments = () => {
     const [listError,setListError] = useState(null);
     const [isListLengthZero,setIsListLengthZero] = useState(true);
     const [isDeleted,setIsDeleted] = useState(false);
-
+    const [render , setRender] = useState(0);
     useEffect(() => {
         getAppointmentsList(user?.user_id, user?.token)
         .then(res => {
@@ -20,13 +20,13 @@ const PatientAppointments = () => {
         .catch(err => {
             setListError(`Something went Wrong`)
         })
-    }, []);
+    }, [render]);
 
     const handleDelete = async(availability_id)=>{
         try {
             const res = await deleteAppointment(user?.token , availability_id);
-            setAppointmentInfo(appointmentInfo.filter((info)=> info.availability_id!=availability_id));
             setIsDeleted(true);
+            setRender(prev => ++prev);
         } catch (error) {
             console.log(error);
         }
