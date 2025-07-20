@@ -9,7 +9,6 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
     
     const [selectedSlot,setSelectedSlot] = useState(null);
     
-    console.log(selectedSlot?.value);
     return (
     <div className='fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50'>
         <div className='bg-white p-6 rounded-lg w-full max-w-md space-x-2 space-y-2'>

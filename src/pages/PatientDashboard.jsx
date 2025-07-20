@@ -1,7 +1,7 @@
 import { IoPersonCircle } from "react-icons/io5";
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { bookAppointment, getDoctorsList } from '../services/patientDashboard';
+import { bookAppointment, getDoctorsList } from '../services/patient';
 import PatientDashboardModal from "../components/modal/PatientDashboardModal";
 
 
@@ -26,7 +26,6 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   const handleSelectButton = async(slot)=>{
     setError(null);
     setSuccess(null);
-    console.log({slot,user_id : user.user_id})
     if (!slot) {
       console.log('please select a Slot')
       return setError(`please select a Slot.`);
@@ -52,7 +51,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   }, []);
   
   return (
-    <div className='m-3 min-h-screen '>
+    <div className='m-3 min-h-screen '> <p className="text-center font-semibold text-lg w-full bg-gray-100 rounded-full">Book An Appointment</p>
         <div className='grid grid-cols-1 sm:grid-cols-2'>
             {doctorsInfo && doctorsInfo.map((doc,index) =>(
                 <div className='border p-7 bg-gray-100 m-2 shadow space-y-2' key={index}>
@@ -72,7 +71,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
             error={error}
             success={success}
             />}
-            {(doctorsInfoError || doctorsInfo.length == 0) && <h5 className='text-center'>No Doctors Found</h5>}
+            {(doctorsInfoError || doctorsInfo == null) && <h5 className='text-center'>No Doctors Found</h5>}
         </div>
     </div>
   )
