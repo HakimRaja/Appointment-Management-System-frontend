@@ -43,11 +43,11 @@ export const getAppointmentsList = async(user_id,token)=>{
 }
 
 const DELETE_APPOINTMENT_URL = '/patientDashboard/deleteappointment';
-export const deleteAppointment = async(token , availability_id)=>{
+export const deleteAppointment = async(token,availability_id)=>{
     try {
-        const res = await api.patch(`${DELETE_APPOINTMENT_URL}/${availability_id}`,{
-            headers:{
-                'Authorization' :  `Bearer ${token}`
+        const res = await api.patch(`${DELETE_APPOINTMENT_URL}/${availability_id}`,{},{
+            headers : {
+                'Authorization' : `Bearer ${token}`
             }
         });
         return res.data

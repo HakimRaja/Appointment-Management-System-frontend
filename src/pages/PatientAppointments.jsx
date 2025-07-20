@@ -1,6 +1,6 @@
 import React, { use, useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext';
-import { getAppointmentsList } from '../services/patient';
+import { deleteAppointment, getAppointmentsList } from '../services/patient';
 
 const PatientAppointments = () => {
     const {user} = useContext(AuthContext);
@@ -21,14 +21,10 @@ const PatientAppointments = () => {
             setListError(`Something went Wrong`)
         })
     }, []);
-    const timeoutDelete =()=>{
-        setTimeout(() => {
-            setIsDeleted(false);
-        }, 3000);
-    }
+
     const handleDelete = async(availability_id)=>{
         try {
-            const res = deleteAppointment(user.token , availability_id);
+            const res = await deleteAppointment(user?.token , availability_id);
             setAppointmentInfo(appointmentInfo.filter((info)=> info.availability_id!=availability_id));
             setIsDeleted(true);
         } catch (error) {
@@ -38,9 +34,10 @@ const PatientAppointments = () => {
     return (
         <div className='min-h-screen m-3'>
             <p className="text-center font-semibold text-lg w-full bg-gray-100 rounded-full mb-1">Appointments</p>
-            {isDeleted && timeoutDelete() && <p className="text-center font-semibold text-lg w-full bg-yellow-200 rounded-full">Appointment Deleted Successfully</p>}
+            {isDeleted && <p className="text-center font-semibold text-lg w-full bg-yellow-200 rounded-full" onClick={()=> setIsDeleted(false)}>Appointment Deleted Successfully</p>}
+            {(!appointmentInfo || appointmentInfo?.length == 0) && <p className="text-center font-semibold text-lg w-full ">No Appointments</p>}
             <div className='grid grid-cols-1 sm:grid-cols-2'>
-                {appointmentInfo && appointmentInfo.map((appointment,index)=>(
+                {appointmentInfo && appointmentInfo?.length > 0 && appointmentInfo.map((appointment,index)=>(
                     <div className='bg-gray-100 space-y-2 border p-7 m-2' key={index}>
                         <div className='font-bold'>Doc. {appointment.name}</div>
                         <div className='font-semibold'>Email : {appointment.email}</div>
