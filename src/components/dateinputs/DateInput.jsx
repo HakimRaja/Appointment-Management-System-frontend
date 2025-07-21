@@ -2,7 +2,7 @@ import React from 'react'
 import { DatePicker } from 'antd'
 import dayjs from 'dayjs';
 
-const DateInput = ({label,required,name,value,onChange,format = 'YYYY-MM-DD' ,labelClass , datePickerClass}) => {
+const DateInput = ({label,required,name,value,onChange,format = 'YYYY-MM-DD' ,labelClass , datePickerClass, disabledDateFunc = false}) => {
   return (
     <div className='my-4'>
         {label && (<label className={labelClass ? labelClass:('font-semibold mt-4')}>{label}{required && (<span className='text-red-800'>*</span>)}</label>)}
@@ -12,6 +12,7 @@ const DateInput = ({label,required,name,value,onChange,format = 'YYYY-MM-DD' ,la
         onChange={onChange}
         format={format}
         className={datePickerClass ? datePickerClass:('w-full')}
+        {...(disabledDateFunc ? {disabledDate : disabledDateFunc}:{})}
         />
     </div>
   )

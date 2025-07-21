@@ -7,6 +7,7 @@ import { AuthContext} from '../../context/AuthContext';
 import {Link} from 'react-router-dom';
 import { SIGNUP_FIELDS } from '../../constants/signupFields';
 import Radio from '../radiobuttons/Radio';
+import dayjs from 'dayjs';
 
 const SignupForm = () => {
   const {medicalSpecializations , signupInfo ,signupError,signupSuccess,isSignupLoading , signupUser,updateSignupInfo } = useContext(AuthContext);
@@ -18,6 +19,9 @@ const SignupForm = () => {
     else{
       updateSignupInfo({...signupInfo , [e.target.name] : e.target.value})
     }
+  }
+  const disabledDateFunc = (current) =>{
+    return current && current > dayjs().startOf(day);
   }
 
   return (
@@ -48,6 +52,7 @@ const SignupForm = () => {
     {...SIGNUP_FIELDS.dob}
     onChange={(date,dateString) => updateSignupInfo({...signupInfo,dob:dateString})}
     value={signupInfo.dob}
+    disabledDateFunc={disabledDateFunc}
     />
 
       <Radio

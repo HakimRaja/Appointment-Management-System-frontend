@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Select from 'react-select';
 import DateInput from '../dateinputs/DateInput';
+import dayjs from 'dayjs';
 
 const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,success}) => {
     const [selectedSlot,setSelectedSlot] = useState(null);
@@ -13,12 +14,11 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
         .map((avail) => ({label : `${avail.start_time}-${avail.end_time}`,
                 value : avail.availability_id}));
     },[selectedDate,doc?.availabilities]);
-//     const availOptions = doc.availabilities.map(avail => {
-//         if (avail.date.slice(0,10) == selectedDate) {
-//         return {label : `${avail.start_time}-${avail.end_time} On ${avail.date.slice(0,10)}`,
-//         value : avail.availability_id}
-//  } });
-//  console.log(availOptions);
+
+    const disabledDateFunc = (current) =>{
+        return current && current < dayjs().startOf('day')
+    }
+
     useEffect(() => {
       setSelectedSlot(null);
     }, [selectedDate])
@@ -33,6 +33,7 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
             required={true}
             value={selectedDate}
             onChange={(date,dateString) => setSelectedDate(dateString)}
+            disabledDateFunc={disabledDateFunc}
             />
             {availOptions && availOptions.length !== 0 ? <Select
             options={availOptions}
