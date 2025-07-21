@@ -10,7 +10,7 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
             return [];
         }
         return doc.availabilities.filter((avail) => avail.date.slice(0,10) === selectedDate)
-        .map((avail) => ({label : `${avail.start_time}-${avail.end_time} On ${avail.date.slice(0,10)}`,
+        .map((avail) => ({label : `${avail.start_time}-${avail.end_time}`,
                 value : avail.availability_id}));
     },[selectedDate,doc?.availabilities]);
 //     const availOptions = doc.availabilities.map(avail => {
