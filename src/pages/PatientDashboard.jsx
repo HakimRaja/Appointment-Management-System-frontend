@@ -22,6 +22,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
     setIsModalOpen(false);
     setError(null);
     setSuccess(null);
+    setSelectedDoctor(null);
   }
   const handleSelectButton = async(slot)=>{
     setError(null);
@@ -32,7 +33,10 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
     }
     try {
      const res = await bookAppointment(user?.token , slot?.value);
-      
+     setDoctorsInfo(prev => prev.map(doc => {
+      if(doc.user_id === selectedDoctor.user_id) return ({...doc,availabilities : doc.availabilities.filter(avail => avail.availability_id !== slot.value)})
+      return doc;
+      })) 
      setSuccess('Slot booked successfully.')
     } catch (error) {
       return setError(error?.response?.data?.message || error?.message || error);

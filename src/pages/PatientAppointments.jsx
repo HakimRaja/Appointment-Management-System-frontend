@@ -34,7 +34,7 @@ const PatientAppointments = () => {
     return (
         <div className='min-h-screen m-3'>
             <p className="text-center font-semibold text-lg w-full bg-gray-100 rounded-full mb-1">Appointments</p>
-            {isDeleted && <p className="text-center font-semibold text-lg w-full bg-yellow-200 rounded-full" onClick={()=> setIsDeleted(false)}>Appointment Deleted Successfully</p>}
+            {isDeleted && <p className="text-center font-semibold text-lg w-full bg-yellow-200 rounded-full p-3">Appointment Deleted Successfully <span className='bg-yellow-400 hover:bg-yellow-500 hover:scale-105 transition ease-in-out rounded-full cursor-pointer p-2' onClick={()=> setIsDeleted(false)}>X</span></p>}
             {(!appointmentInfo || appointmentInfo?.length == 0) && <p className="text-center font-semibold text-lg w-full ">No Appointments</p>}
             <div className='grid grid-cols-1 sm:grid-cols-2'>
                 {appointmentInfo && appointmentInfo?.length > 0 && appointmentInfo.map((appointment,index)=>(
