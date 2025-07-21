@@ -64,7 +64,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
                     <h5 className='font-semibold'>Email : {doc.email}</h5>
                     <h5 className='font-semibold'>Phone : {doc.phone}</h5>  
                     <h5 className='font-semibold'>Specializations : {doc.specializations?.map((spec,index) => (<span key={index}> {spec} {index !== doc.specializations.length-1 ? ', ':``}</span>))}</h5>
-                    <h5 className='font-semibold'>Experience : {<span>{doc?.experience[0]>=1 ? `${doc?.experience[0]} year and`:''} {doc?.experience[1]} months</span>}</h5>
+                    <h5 className='font-semibold'>Experience : {doc?.experience}</h5>
                     <button onClick={() => handleBookClick(doc)} className='w-full my-4 p-2 bg-blue-500 rounded-full text-white hover:bg-blue-600 hover:scale-105 transition ease-in-out'>Book an Appointment</button>
                 </div>
             ))}
