@@ -27,7 +27,7 @@ const LoginForm = () => {
         />
 
         <Button type='submit'>{isLoginLoading ? 'Logging into your account' : 'Login'}</Button>
-        <div className='text-red-400 mx-auto hover:underline hover:text-red-500 transition ease-in-out'><Link to='/signup'>Go to signup page</Link></div>
+        <div className='text-red-400 mx-auto hover:underline hover:text-red-500 transition ease-in-out'><Link to='/signup'>Go To Signup Page</Link></div>
       </form>
       {loginSuccess && (<span className='bg-green-300'>Login Successfull</span>)}
       {loginError && (<span className='bg-red-300'>{loginError}</span>)}
