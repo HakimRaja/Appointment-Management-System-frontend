@@ -21,7 +21,7 @@ const SignupForm = () => {
     }
   }
   const disabledDateFunc = (current) =>{
-    return current && current > dayjs().startOf(day);
+    return current && current > dayjs().startOf('day');
   }
 
   return (
