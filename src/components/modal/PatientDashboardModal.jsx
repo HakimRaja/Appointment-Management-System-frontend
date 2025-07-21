@@ -43,8 +43,8 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
             /> : <p className='w-full border'>No Slot Found</p>}
             <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full p-2' onClick={handleCloseModal}>Close</button>
             <button className='bg-blue-600 hover:bg-blue-700 transition ease-in-out text-white rounded-full p-2' onClick={()=>handleSelectButton(selectedSlot)}>Confirm Booking</button>
-            {error && (<p className='bg-red-400'>{error}</p>)}
-            {success && (<p className='bg-green-400'>{success}</p>)}
+            {/* {error && (<p className='bg-red-400'>{error}</p>)}
+            {success && (<p className='bg-green-400'>{success}</p>)} */}
         </div>
     </div>
   )

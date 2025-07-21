@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { bookAppointment, getDoctorsList } from '../services/patient';
 import PatientDashboardModal from "../components/modal/PatientDashboardModal";
+import { toast } from "sonner";
 
 
 const PatientDashboard = () => { // now i have to integrate the backend in comming data
@@ -16,12 +17,12 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
 
   const handleBookClick = (doc) =>{
     setSelectedDoctor(doc);
+    setError(null);
+    setSuccess(null);
     setIsModalOpen(true);
   };
   const handleCloseModal = ()=>{
     setIsModalOpen(false);
-    setError(null);
-    setSuccess(null);
     setSelectedDoctor(null);
   }
   const handleSelectButton = async(slot)=>{
@@ -37,12 +38,21 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
       if(doc.user_id === selectedDoctor.user_id) return ({...doc,availabilities : doc.availabilities.filter(avail => avail.availability_id !== slot.value)})
       return doc;
       })) 
-     setSuccess('Slot booked successfully.')
+     setSuccess('Slot booked successfully.');
+     handleCloseModal();
     } catch (error) {
       return setError(error?.response?.data?.message || error?.message || error);
-    }
-    
+    } 
   }
+  useEffect(() => {
+    if (success) {
+      toast.success(success);
+    }
+    if (error) {
+      toast.error(error)
+    }
+  }, [success,error])
+  
   
   useEffect(() => {
     getDoctorsList(user.token)
