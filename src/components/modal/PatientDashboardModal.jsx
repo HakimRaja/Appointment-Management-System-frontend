@@ -11,7 +11,10 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
             return [];
         }
         return doc.availabilities.filter((avail) => avail.date.slice(0,10) === selectedDate)
-        .map((avail) => ({label : `${avail.start_time}-${avail.end_time}`,
+        .sort((a,b) => parseInt(a.start_time.slice(0,2) + a.start_time.slice(3,5)) - parseInt(b.start_time.slice(0,2) + b.start_time.slice(3,5)))
+        .map((avail) => ({
+                isDisabled : avail.is_booked,
+                label : (<>{avail.start_time}-{avail.end_time} {avail.booked_by_me && <span className='text-yellow-500'>Already Booked By You</span>}</>),
                 value : avail.availability_id}));
     },[selectedDate,doc?.availabilities]);
 
