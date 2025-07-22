@@ -14,12 +14,12 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
         .sort((a,b) => parseInt(a.start_time.slice(0,2) + a.start_time.slice(3,5)) - parseInt(b.start_time.slice(0,2) + b.start_time.slice(3,5)))
         .map((avail) => ({
                 isDisabled : avail.is_booked,
-                label : (<>{avail.start_time}-{avail.end_time} {avail.booked_by_me && <span className='text-yellow-500'>Already Booked By You</span>}</>),
+                label : (<>{avail.start_time}-{avail.end_time} {avail.is_booked && avail.booked_by_me && <span className='text-yellow-500'>Already Booked By You</span>}</>),
                 value : avail.availability_id}));
     },[selectedDate,doc?.availabilities]);
 
     const disabledDateFunc = (current) =>{
-        return current && current < dayjs().startOf('day')
+        return current && current < dayjs().startOf('day');
     }
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
             onChange={(date,dateString) => setSelectedDate(dateString)}
             disabledDateFunc={disabledDateFunc}
             />
-            {availOptions && availOptions.length !== 0 ? <Select
+            {availOptions && availOptions.length > 0 ? <Select
             options={availOptions}
             value={selectedSlot}
             onChange={setSelectedSlot}
@@ -46,8 +46,6 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
             /> : <p className='w-full border'>No Slot Found</p>}
             <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full p-2' onClick={handleCloseModal}>Close</button>
             <button className='bg-blue-600 hover:bg-blue-700 transition ease-in-out text-white rounded-full p-2' onClick={()=>handleSelectButton(selectedSlot)}>Confirm Booking</button>
-            {/* {error && (<p className='bg-red-400'>{error}</p>)}
-            {success && (<p className='bg-green-400'>{success}</p>)} */}
         </div>
     </div>
   )

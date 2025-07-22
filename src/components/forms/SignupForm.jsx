@@ -100,7 +100,6 @@ const SignupForm = () => {
       <div className='text-red-400 mx-auto hover:underline hover:text-red-500 transition ease-in-out'><Link to='/login'>Go To Login Page</Link></div>
     </form>
     {signupSuccess && (<span className='bg-green-300'>Sign up Successfull</span>)}
-    {/* {signupError && (<span className='bg-red-300'>{signupError}</span>)} */}
     </>
   )
 }
