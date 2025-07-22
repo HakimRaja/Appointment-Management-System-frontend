@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Input from '../input/Input';
 import Button from '../buttons/Button';
 import DateInput from '../dateinputs/DateInput';
@@ -7,6 +7,8 @@ import { AuthContext} from '../../context/AuthContext';
 import {Link} from 'react-router-dom';
 import { SIGNUP_FIELDS } from '../../constants/signupFields';
 import Radio from '../radiobuttons/Radio';
+import dayjs from 'dayjs';
+import { toast } from 'sonner';
 
 const SignupForm = () => {
   const {medicalSpecializations , signupInfo ,signupError,signupSuccess,isSignupLoading , signupUser,updateSignupInfo } = useContext(AuthContext);
@@ -19,7 +21,15 @@ const SignupForm = () => {
       updateSignupInfo({...signupInfo , [e.target.name] : e.target.value})
     }
   }
-
+  const disabledDateFunc = (current) =>{
+    return current && current > dayjs().startOf('day');
+  }
+  useEffect(() => {
+    if (signupError) {
+      toast.error(signupError);
+    }
+  }, [signupError]);
+  
   return (
     <>
     <form onSubmit={signupUser}>
@@ -48,6 +58,7 @@ const SignupForm = () => {
     {...SIGNUP_FIELDS.dob}
     onChange={(date,dateString) => updateSignupInfo({...signupInfo,dob:dateString})}
     value={signupInfo.dob}
+    disabledDateFunc={disabledDateFunc}
     />
 
       <Radio
@@ -86,10 +97,9 @@ const SignupForm = () => {
       )}
 
       <Button type='submit' >{isSignupLoading ? 'Creating New User':'SignUp'}</Button>
-      <div className='text-red-400 mx-auto hover:underline hover:text-red-500 transition ease-in-out'><Link to='/login'>Go to login page</Link></div>
+      <div className='text-red-400 mx-auto hover:underline hover:text-red-500 transition ease-in-out'><Link to='/login'>Go To Login Page</Link></div>
     </form>
     {signupSuccess && (<span className='bg-green-300'>Sign up Successfull</span>)}
-    {signupError && (<span className='bg-red-300'>{signupError}</span>)}
     </>
   )
 }

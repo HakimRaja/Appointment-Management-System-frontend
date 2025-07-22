@@ -9,9 +9,11 @@ const SignupPage = () => {
   }, [])
   
   return (
-    <div className='max-w-md mx-auto mt-10 p-4 border rounded shadow max-h-md'>
+    <div className='flex items-center justify-center min-h-screen m-4'>
+      <div className='bg-gray-100 border shadow p-7'>
       <h2 className='text-2xl font-bold mb-4 text-center'>Sign Up</h2>
       <SignupForm/>
+      </div>
     </div>
   )
 }

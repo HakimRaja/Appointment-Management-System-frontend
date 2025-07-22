@@ -9,9 +9,11 @@ const LoginPage = () => {
   }, [])
   
   return (
-    <div className='max-w-md mx-auto mt-10 p-4 border rounded shadow max-h-md'>
+    <div className='min-h-screen flex items-center justify-center '>
+      <div className='border p-7 bg-gray-100 shadow'>
       <h2 className='text-2xl font-bold mb-4'>Log In</h2>
       <LoginForm/>
+      </div>
     </div>
   )
 }
