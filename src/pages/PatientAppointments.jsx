@@ -9,6 +9,7 @@ const PatientAppointments = () => {
     const [listError,setListError] = useState(null);
     const [isListLengthZero,setIsListLengthZero] = useState(true);
     const [isDeleted,setIsDeleted] = useState(false);
+    const [isUpdated,setIsUpdated] = useState(false);
     const [render , setRender] = useState(0);
     useEffect(() => {
         getAppointmentsList(user?.user_id, user?.token)
@@ -24,6 +25,7 @@ const PatientAppointments = () => {
     }, [render]);
 
     const handleDelete = async(availability_id)=>{
+        setIsUpdated(false)
         try {
             const res = await deleteAppointment(user?.token , availability_id);
             setIsDeleted(true);
@@ -32,9 +34,23 @@ const PatientAppointments = () => {
             console.log(error);
         }
     };
+    const handleUpdate = async(availability_id)=>{
+        setIsDeleted(false);
+        try {
+            const res = await updateAppointment(user?.token , availability_id);
+            setIsUpdated(true);
+            setRender(prev => ++prev);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
       if (isDeleted) {
         toast.success('Appointment Cancelled Successfully');
+      }
+      if (isUpdated) {
+        toast.success('Appointment Updated Successfully');
       }
     }, [isDeleted])
     
@@ -52,6 +68,7 @@ const PatientAppointments = () => {
                         <div className='font-semibold'>Time : {appointment.start_time} - {appointment.end_time}</div>
                         <div className='font-semibold'>Date : {appointment.date.slice(0,10)}</div>
                         <div className='font-semibold'>Status : {appointment.status}</div>
+                        <button className='bg-yellow-400 hover:bg-yellow-500 transition ease-in-out text-white rounded-full p-2 w-full hover:scale-105' onClick={() => handleUpdate(appointment.appointment_id)}>Update Appointment</button>
                         <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full p-2 w-full hover:scale-105' onClick={() => handleDelete(appointment.appointment_id)}>Cancel Appointment</button>
                     </div>
                 ))}
