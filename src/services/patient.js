@@ -55,3 +55,32 @@ export const deleteAppointment = async(token,availability_id)=>{
         throw error
     }
 }
+
+const GET_AVAILABILITIES_FOR_UPDATE_URL = '/patientDashboard/appointment';
+export const getAvailabilitiesForUpdate = async (token , doctor_id) => {
+    try {
+        const res = await api.get(`${GET_AVAILABILITIES_FOR_UPDATE_URL}/${doctor_id}`,{
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            }
+        });
+        return res?.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+const UPDATE_APPOINTMENT_URL = '/patientDashboard/appointment';
+export const updateAppointment = async(token,appointment_id,availability_id)=>{
+    try {
+        const res = await api.patch(`${UPDATE_APPOINTMENT_URL}/${appointment_id}`,{availability_id},{
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            }
+        });
+        return res?.data;
+    } catch (error) {
+        console.log(error?.message);
+        throw error;
+    }
+}

@@ -14,6 +14,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   const [selectedDoctor , setSelectedDoctor] = useState(null);
   const [error,setError] = useState(null);
   const [success,setSuccess] = useState(null);
+  const [render , setRender] = useState(1);
 
   const handleBookClick = (doc) =>{
     setSelectedDoctor(doc);
@@ -34,10 +35,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
     }
     try {
      const res = await bookAppointment(user?.token , slot?.value);
-     setDoctorsInfo(prev => prev.map(doc => {
-      if(doc.user_id === selectedDoctor.user_id) return ({...doc,availabilities : doc.availabilities.filter(avail => avail.availability_id !== slot.value)})
-      return doc;
-      })) 
+     setRender(prev => ++prev);
      setSuccess('Slot booked successfully.');
      handleCloseModal();
     } catch (error) {
@@ -62,10 +60,10 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
         setDoctorsInfoError(error?.response?.data?.message)
     });  
     
-  }, []);
+  }, [render]);
   
   return (
-    <div className='m-3 min-h-screen '> <p className="text-center font-semibold text-lg w-full bg-gray-100 rounded-full">Book An Appointment</p>
+    <div className='m-3 min-h-screen '> <p className="text-center font-semibold text-lg w-full ">Book An Appointment</p>
         <div className='grid grid-cols-1 sm:grid-cols-2'>
             {doctorsInfo && doctorsInfo.map((doc,index) =>(
                 <div className='border p-7 bg-gray-100 m-2 shadow space-y-2' key={index}>

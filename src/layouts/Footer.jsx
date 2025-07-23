@@ -9,6 +9,7 @@ const classNames = {
     heading : 'font-bold text-3xl mb-2',
     text : 'font-semibold text-xl',
     icons : 'flex gap-4 text-xl',
+    iconTransition : 'hover:scale-110 transition ease-in-out',
     line : 'my-6 border-gray-400',
     copyRights : 'text-center text-sm text-gray-600'
 }
@@ -37,13 +38,13 @@ const Footer = () => {
                 <div className={classNames.divs}>
                     <div className={classNames.heading}>{contentGrd2.heading}</div>
                     <div className={classNames.icons}>
-              <a href='https://facebook.com' target='_blank'>
+              <a href='https://facebook.com' target='_blank' className={classNames.iconTransition}>
                 <FaFacebookF />
               </a>
-              <a href='https://instagram.com' target='_blank'>
+              <a href='https://instagram.com' target='_blank' className={classNames.iconTransition}>
                 <FaInstagram />
               </a>
-              <a href='https://linkedin.com' target='_blank'>
+              <a href='https://linkedin.com' target='_blank' className={classNames.iconTransition}>
                 <FaLinkedin />
               </a>
             </div>
