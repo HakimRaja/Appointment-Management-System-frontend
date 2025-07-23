@@ -3,7 +3,7 @@ import Select from 'react-select';
 import DateInput from '../dateinputs/DateInput';
 import dayjs from 'dayjs';
 
-const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,success}) => {
+const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,success,operation = 'Booking'}) => {
     const [selectedSlot,setSelectedSlot] = useState(null);
     const [selectedDate,setSelectedDate] = useState(null);
     const availOptions = useMemo(()=>{
@@ -45,7 +45,7 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
             placeholder='Select a Slot'
             /> : <p className='w-full border'>No Slot Found</p>}
             <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full p-2' onClick={handleCloseModal}>Close</button>
-            <button className='bg-blue-600 hover:bg-blue-700 transition ease-in-out text-white rounded-full p-2' onClick={()=>handleSelectButton(selectedSlot)}>Confirm Booking</button>
+            <button className='bg-blue-600 hover:bg-blue-700 transition ease-in-out text-white rounded-full p-2' onClick={()=>handleSelectButton(selectedSlot)}>Confirm {operation}</button>
         </div>
     </div>
   )
