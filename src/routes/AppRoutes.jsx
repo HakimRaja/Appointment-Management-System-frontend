@@ -6,6 +6,7 @@ import PatientDashboard from '../pages/PatientDashboard'
 import { AuthContext } from '../context/AuthContext'
 import Home from '../pages/Home'
 import PatientAppointments from '../pages/PatientAppointments'
+import DoctorDashboard from '../pages/DoctorDashboard'
 
 const AppRoutes = () => {
     const {isAuthenticated,user} =useContext(AuthContext);
@@ -13,6 +14,7 @@ const AppRoutes = () => {
         <Routes>
             <Route path='/' element={isAuthenticated ? <Navigate to={`/${user?.role}`}/>:<Navigate to='/login'/>}/>
             <Route path='/patient' element={(isAuthenticated && (user?.role == 'patient')) ? <PatientDashboard/>:<Navigate to='/login'/>}/>
+            <Route path='/doctor' element={(isAuthenticated && (user?.role == 'doctor')) ? <DoctorDashboard/> : <Navigate to='/login'/>}/>
             <Route path='patient/appointments' element={(isAuthenticated && (user?.role == 'patient')) ? <PatientAppointments/>:<Navigate to='/login'/>}/>
             <Route path='/signup' element={isAuthenticated ? <Navigate to='/'/>:<SignupPage/>}/>
             <Route path='/login' element={isAuthenticated ? <Navigate to='/'/>:<LoginPage/>}/>
@@ -22,4 +24,4 @@ const AppRoutes = () => {
   )
 }
 
-export default AppRoutes
+export default AppRoutes;
