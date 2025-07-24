@@ -9,6 +9,7 @@ const Navbar = () => {
         <nav className='bg-gray-200 font-semibold flex flex-col sm:flex-row items-center justify-between p-3'>
             <div className='space-x-2'><Link to='/' className='hover:cursor-pointer hover:underline'>AMS</Link>
             {user?.role == 'patient' && <> |<Link to='/patient/appointments' className='hover:cursor-pointer hover:underline'>Appointments</Link></>}
+            {user?.role == 'doctor' && <> |<Link to='/doctor/availability' className='hover:cursor-pointer hover:underline'>Add Availability</Link></>}
             </div>
             <div>{user && <div>Welcome {user.name}!</div>}</div>
             <div className='space-x-4 '>
