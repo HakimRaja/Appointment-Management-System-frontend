@@ -63,7 +63,7 @@ const DoctorAvailabilities = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-r from-red-100 via-red-200 to-red-300'>
+    <div className='min-h-screen bg-gradient-to-r from-gray-100 via-slate-400 to-red-300'>
         <div>
             <div className='text-xl font-bold text-center p-2'>Add Availabilities</div>
             <div className='flex justify-center item-center mt-5'>
