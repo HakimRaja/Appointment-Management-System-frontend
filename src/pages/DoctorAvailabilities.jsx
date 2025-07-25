@@ -24,18 +24,34 @@ const DoctorAvailabilities = () => {
   const disabledDateFunc = (current)=>{
     return current && current < dayjs().startOf('day')
   }
-  const getStartTimeOfPostedAvailabilities = useMemo(() => {
-    if (!selectedDate || !availabilities) {
+  
+  /*
+   FUNCTION FOR USE MEMO
+   */
+  const getStartTimeOfPostedAvailabilitiesFunc = ()=>{
+      if (!selectedDate || !availabilities) {
         return []
     }
     return availabilities.filter(avail => avail.date.slice(0,10) == selectedDate)
     .map(avail => avail.start_time);
+  }
+  const getStartTimeOfPostedAvailabilities = useMemo(() => {
+      return getStartTimeOfPostedAvailabilitiesFunc();
   }, [selectedDate])
 
+  /*
+   FUNCTION FOR USE EFFECT
+   */
+  const callGetAvailabilitiesFunc = async()=>{
+    try {
+      const res = await getAvailabilities();
+      setAvailabilities(res.availabilities)
+    } catch (error) {
+      err => console.log(err)
+    }
+  }
   useEffect(() => {
-    getAvailabilities(user?.token,user?.user_id)
-    .then(res => setAvailabilities(res.availabilities))
-    .catch(err => console.log(err));
+    (async () => await callGetAvailabilitiesFunc())(); //IIFE
   }, [render])
   
 
@@ -49,8 +65,9 @@ const DoctorAvailabilities = () => {
     if (!selectedSlots || selectedSlots.length === 0) {
         return toast.error('No Slot Is Selected.')
     }
+    const payload = ({selectedSlots,selectedDate});
     try {
-        const res = await addDoctorAvailabilities(user?.token,selectedSlots,selectedDate);
+        const res = await addDoctorAvailabilities(payload);
         setRender((prev) => prev++);
         toast.success('Successfully Added.')
     } catch (error) {

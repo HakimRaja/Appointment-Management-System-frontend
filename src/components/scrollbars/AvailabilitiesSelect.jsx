@@ -1,26 +1,51 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { timeSlots } from '../../constants/doctorTimeSlots'
 import Select from 'react-select'
 
 const AvailabilitiesSelect = ({label,labelClass,selectClass,slotList,multiSelect,value,onChange,selectedDate}) => {
-  const today = new Date();
-  const todaysDate = today.toLocaleDateString('en-CA',{
+  const [today,setToday] = useState(new Date());
+  
+  const [todaysDate,setTodaysDate] = useState(today.toLocaleDateString('en-CA',{
     timeZone : 'Asia/Karachi'
-  })
-//   console.log(todaysDate);
-  const check = (todaysDate == selectedDate);
-  const timeRightNow = today.toLocaleTimeString('en-GB',{
+    }));
+
+  const [timeRightNow,setTimeRightNow] = useState(today.toLocaleTimeString('en-GB',{
     timeZone : 'Asia/Karachi',
     hour12  :false
-  })
-//   console.log(timeRightNow);
+    }));
+
+  /**
+   * 
+   * @returns if selected date is of same date
+   */
+  const check = () => {
+    return todaysDate == selectedDate;
+  };
+
+  /**
+   * It is called only when the selected date is of the same day
+   * @param {*} start_time from all the slots
+   * @returns if the slot start time is less then the time right now
+   */
   const timeDifference = (start_time)=>{
     return ((parseInt(`${timeRightNow.slice(0,2)}${timeRightNow.slice(3,5)}${timeRightNow.slice(6)}`)) > (parseInt(`${start_time.slice(0,2)}${start_time.slice(3,5)}${start_time.slice(6)}`)));
   }
-  const options = timeSlots.map((slot,index) => ({isDisabled : (slotList.includes(slot.start_time) || (check && timeDifference(slot.start_time))),
-    label : slot.label,
-    value : {start_time : slot.start_time, end_time : slot.end_time}
-  }))
+
+  /**
+   * Options function for Select
+   * @param {*} none
+   * @returns it just iterates through every slot and returns every slot which is either not already in the availability column or if the date is same then the 
+   *          start_time should be greater then the time right now
+   */
+  const getOptions = () => {
+    return timeSlots.map((slot,index) => ({isDisabled : (slotList.includes(slot.start_time) || (check() && timeDifference(slot.start_time))),
+      label : slot.label,
+      value : {start_time : slot.start_time, end_time : slot.end_time}
+    }));
+  }
+
+  const options = getOptions();
+
   return (
     <div>
         {label && <div className={labelClass || 'font-semibold'}>{label}</div>}

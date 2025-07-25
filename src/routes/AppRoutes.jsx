@@ -8,19 +8,23 @@ import Home from '../pages/Home'
 import PatientAppointments from '../pages/PatientAppointments'
 import DoctorDashboard from '../pages/DoctorDashboard'
 import DoctorAvailabilities from '../pages/DoctorAvailabilities'
+import PrivateRoute from '../components/routes/PrivateRoute'
+import MainRoute from '../components/routes/MainRoute'
+import PublicRoute from '../components/routes/PublicRoute'
 
 const AppRoutes = () => {
-    const {isAuthenticated,user} =useContext(AuthContext);
     return (
         <Routes>
-            <Route path='/' element={isAuthenticated ? <Navigate to={`/${user?.role}`}/>:<Navigate to='/login'/>}/>
-            <Route path='/patient' element={(isAuthenticated && (user?.role == 'patient')) ? <PatientDashboard/>:<Navigate to='/login'/>}/>
-            <Route path='/doctor' element={(isAuthenticated && (user?.role == 'doctor')) ? <DoctorDashboard/> : <Navigate to='/login'/>}/>
-            <Route path='/doctor/availability' element={(isAuthenticated && (user?.role == 'doctor')) ? <DoctorAvailabilities/> : <Navigate to='/login'/>}/>
-            <Route path='patient/appointments' element={(isAuthenticated && (user?.role == 'patient')) ? <PatientAppointments/>:<Navigate to='/login'/>}/>
-            <Route path='/signup' element={isAuthenticated ? <Navigate to='/'/>:<SignupPage/>}/>
-            <Route path='/login' element={isAuthenticated ? <Navigate to='/'/>:<LoginPage/>}/>
-            <Route path='*' element={isAuthenticated ? <Home/>:<Navigate to='/'/>}/>
+            <Route path='/' element={<MainRoute/>}/>
+
+            <Route path='/patient' element={<PrivateRoute element={PatientDashboard} role='patient'/>}/>
+            <Route path='/doctor' element={<PrivateRoute element={DoctorDashboard} role='doctor'/>}/>
+            <Route path='/doctor/availability' element={<PrivateRoute element={DoctorAvailabilities} role='doctor'/>}/>
+            <Route path='patient/appointments' element={<PrivateRoute element={PatientAppointments} role='patient'/>}/>
+
+            <Route path='/signup' element={<PublicRoute element={SignupPage}/>}/>
+            <Route path='/login' element={<PublicRoute element={LoginPage}/>}/>
+            <Route path='*' element={<PublicRoute element={Home} />}/>
             
         </Routes>
   )
