@@ -1,7 +1,7 @@
 import React,{createContext,useState,useEffect,useContext, use} from "react";
 import api from "../api/api";
 import { checkauthentication, login, signup } from "../services/authServices";
-import { getSignupInfo } from "../services/helper/authHelper";
+import { getSignupInfo } from "../utils/authHelper";
 
 export const AuthContext = createContext();
 
