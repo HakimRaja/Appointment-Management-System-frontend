@@ -144,8 +144,8 @@ const DoctorDashboard = () => {
                     <h1>End Time   : {avail.end_time}</h1>
                     <h1>Status     : {avail?.status || <span>slot is free</span>}</h1>
                     {avail?.status ? 
-                    <><button className={buttonClasses.detail} onClick={() => seeDetailsConditionForButton(avail.availability_id) ? '':handleSeeDetails(avail.patient_id,avail.availability_id)}>{seeDetailsConditionForButton(avail.availability_id) ? 'Opening Details':'See Details'}</button> <button className={buttonClasses.cancel} onClick={() => cancelConditionForButton(avail.availability_id) ? '':handleCancel(avail.availability_id)}>{cancelConditionForButton(avail.availability_id) ? 'Cancelling':'Cancel Appointment'}</button></>
-                    : <button className={buttonClasses.remove} onClick={() => removeConditionForButton(avail.availability_id) ? '':handleRemove(avail.availability_id)}>{removeConditionForButton(avail.availability_id) ? 'Removing Slot':'Remove Slot'}</button>}
+                    <><button className={buttonClasses.detail} onClick={() => seeDetailsConditionForButton(avail.availability_id) || handleSeeDetails(avail.patient_id,avail.availability_id)}>{seeDetailsConditionForButton(avail.availability_id) ? 'Opening Details':'See Details'}</button> <button className={buttonClasses.cancel} onClick={() => cancelConditionForButton(avail.availability_id) || handleCancel(avail.availability_id)}>{cancelConditionForButton(avail.availability_id) ? 'Cancelling':'Cancel Appointment'}</button></>
+                    : <button className={buttonClasses.remove} onClick={() => removeConditionForButton(avail.availability_id) || handleRemove(avail.availability_id)}>{removeConditionForButton(avail.availability_id) ? 'Removing Slot':'Remove Slot'}</button>}
                 </div>
                 </div>)): <div>No slots found ...</div>}
             </div>
