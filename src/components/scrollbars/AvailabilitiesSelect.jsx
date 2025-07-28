@@ -14,29 +14,16 @@ const AvailabilitiesSelect = ({label,labelClass,selectClass,slotList,multiSelect
     hour12  :false
     }));
 
-  /**
-   * 
-   * @returns if selected date is of same date
-   */
+
   const check = () => {
     return todaysDate == selectedDate;
   };
 
-  /**
-   * It is called only when the selected date is of the same day
-   * @param {*} start_time from all the slots
-   * @returns if the slot start time is less then the time right now
-   */
+
   const timeDifference = (start_time)=>{
     return ((parseInt(`${timeRightNow.slice(0,2)}${timeRightNow.slice(3,5)}${timeRightNow.slice(6)}`)) > (parseInt(`${start_time.slice(0,2)}${start_time.slice(3,5)}${start_time.slice(6)}`)));
   }
 
-  /**
-   * Options function for Select
-   * @param {*} none
-   * @returns it just iterates through every slot and returns every slot which is either not already in the availability column or if the date is same then the 
-   *          start_time should be greater then the time right now
-   */
   const getOptions = () => {
     return timeSlots.map((slot,index) => ({isDisabled : (slotList.includes(slot.start_time) || (check() && timeDifference(slot.start_time))),
       label : slot.label,
