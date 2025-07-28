@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import DateInput from '../components/dateinputs/DateInput';
 import dayjs from 'dayjs';
-import { cancelAppointemntAndRemoveAvailability, deleteAvailabilitySlot, getAvailabilities, getPatientDetails } from '../services/doctor';
+import { addAppointmentToComplete, cancelAppointemntAndRemoveAvailability, deleteAvailabilitySlot, getAvailabilities, getPatientDetails } from '../services/doctor';
 import { IoPersonCircle } from "react-icons/io5";
 import { toast } from 'sonner';
 import PatientDetailModal from '../components/modal/PatientDetailModal';
+import { checkTodaysDate } from '../utils/doctorHelper';
+import { useLocation } from 'react-router-dom';
 
 const buttonClasses = {
     remove : 'p-2 m-2 bg-red-400 rounded-full hover:bg-red-500 hover:scale-105 transition ease-in-out',
@@ -22,11 +24,35 @@ const DoctorDashboard = () => {
   const [render,setRender] = useState(1);
   const [patientDetailModal , setPatientDetailModal] = useState(false);
   const [patientDetails,setPatientDetails] = useState(null);
+  const [isSelectedDateToday,setIsSelectedDateToday] = useState({check : false , timeRightNow : null});
+  const location = useLocation();
+  const passedState = location.state;
+  useEffect(() => {
+    if (passedState?.date) {
+      setSelectedDate(passedState.date);
+    }
+  }, [])
+  
+
 
   const disabledDateFunc = (current) =>{
     return current && current < dayjs().startOf('day')
   }
 
+  const checkDateCondition = (start_time)=>{
+    return isSelectedDateToday.timeRightNow && (parseInt(isSelectedDateToday.timeRightNow.slice(0,2) + isSelectedDateToday.timeRightNow.slice(3,5)) > parseInt(start_time.slice(0,2) + start_time.slice(3,5)));
+  }
+
+  useEffect(() => { 
+  const timeRightNow = checkTodaysDate(selectedDate);
+  if (timeRightNow) {
+    setIsSelectedDateToday({check : true , timeRightNow});
+  }
+  else{
+    setIsSelectedDateToday({check : false , timeRightNow : null});
+  }
+  }, [selectedDate])
+  
   /*
   USE MEMO FOR GETTING AVAILABILITIES AS PER THE DATE
   */
@@ -53,7 +79,7 @@ const DoctorDashboard = () => {
 
   useEffect(() => {
     (async () => await callGetAvailabilitiesFunc())(); 
-  }, [])
+  }, [render])
 
   const handleRemove = async(availability_id)=>{
     setIsLoading({type : 'remove',availability_id})
@@ -103,7 +129,6 @@ const DoctorDashboard = () => {
     try {
       const res = await getPatientDetails(patient_id);
       toast.dismiss(toastId);
-      toast.success('Patient details loaded!');
       setPatientDetails(res.patientDetails);
       setPatientDetailModal(true);
     } catch (error) {
@@ -123,6 +148,24 @@ const DoctorDashboard = () => {
     setPatientDetailModal(false);
     setPatientDetails(null);
   }
+
+  const handleCompleted = async(availability_id)=>{
+    setIsLoading({type : 'completed',availability_id});
+    const toastId = toast.loading('Updating the status ...')
+    try {
+      const res = await addAppointmentToComplete(availability_id);
+      toast.dismiss(toastId);
+      toast.success('Added Successfully!');
+      setRender(prev => ++prev);
+    } catch (error) {
+      const err = error?.response?.data?.message || 'Something Went Wrong!';
+      toast.dismiss(toastId);
+      toast.error(err);
+    }
+    finally{
+      setIsLoading(false);
+    }
+  }
   return (
     <div className='min-h-screen my-3'>
         <div className='text-center text-lg font-extrabold'>Doctor Dashboard</div>
@@ -130,7 +173,7 @@ const DoctorDashboard = () => {
             <div className='font-bold'>See Status Of Availabilities</div>
             <div className='flex justify-center'>
                 <DateInput
-                label={'Select Date To See Your Availabilities'}
+                label={'Select Date To See And Update Your Availabilities'}
                 value={selectedDate}
                 onChange={(date,dateString) => setSelectedDate(dateString)}
                 disabledDateFunc={disabledDateFunc}
@@ -142,10 +185,22 @@ const DoctorDashboard = () => {
                 <div className='space-y-4 text-left p-3'>
                     <h1>Start Time : {avail.start_time}</h1>
                     <h1>End Time   : {avail.end_time}</h1>
-                    <h1>Status     : {avail?.status || <span>slot is free</span>}</h1>
-                    {avail?.status ? 
-                    <><button className={buttonClasses.detail} onClick={() => seeDetailsConditionForButton(avail.availability_id) || handleSeeDetails(avail.patient_id,avail.availability_id)}>{seeDetailsConditionForButton(avail.availability_id) ? 'Opening Details':'See Details'}</button> <button className={buttonClasses.cancel} onClick={() => cancelConditionForButton(avail.availability_id) || handleCancel(avail.availability_id)}>{cancelConditionForButton(avail.availability_id) ? 'Cancelling':'Cancel Appointment'}</button></>
-                    : <button className={buttonClasses.remove} onClick={() => removeConditionForButton(avail.availability_id) || handleRemove(avail.availability_id)}>{removeConditionForButton(avail.availability_id) ? 'Removing Slot':'Remove Slot'}</button>}
+                    <h1>Status     : {avail?.status || <span>free</span>}</h1>
+                    {avail?.status == 'scheduled' &&
+                      <>
+                        <button className={buttonClasses.detail} onClick={() => seeDetailsConditionForButton(avail.availability_id) || handleSeeDetails(avail.patient_id,avail.availability_id)}>{seeDetailsConditionForButton(avail.availability_id) ? 'Opening Details':'See Details'}</button>
+                        { checkDateCondition(avail.start_time) ? 
+                        <button className={buttonClasses.update} onClick={() => handleCompleted(avail.availability_id)}>Mark as completed</button>
+                          :
+                        <button className={buttonClasses.cancel} onClick={() => cancelConditionForButton(avail.availability_id) || handleCancel(avail.availability_id)}>{cancelConditionForButton(avail.availability_id) ? 'Cancelling':'Cancel Appointment'}</button>
+                    }</>}
+                      
+                        {avail?.status == 'completed' && 
+                          <button className={buttonClasses.detail} onClick={() => seeDetailsConditionForButton(avail.availability_id) || handleSeeDetails(avail.patient_id,avail.availability_id)}>{seeDetailsConditionForButton(avail.availability_id) ? 'Opening Details':'See Details'}</button>}
+                            
+                          {!avail.status && 
+                          <button className={buttonClasses.remove} onClick={() => removeConditionForButton(avail.availability_id) || handleRemove(avail.availability_id)}>{removeConditionForButton(avail.availability_id) ? 'Removing Slot':'Remove Slot'}</button>}
+                    
                 </div>
                 </div>)): <div>No slots found ...</div>}
             </div>

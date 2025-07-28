@@ -6,8 +6,11 @@ import DateInput from '../components/dateinputs/DateInput';
 import dayjs from 'dayjs';
 import AvailabilitiesSelect from '../components/scrollbars/AvailabilitiesSelect';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const DoctorAvailabilities = () => {
+  const navigate = useNavigate();
+  
   const {user,isAuthenticated} = useContext(AuthContext);
   const [error,setError] = useState(null);
   const [success,setSuccess] = useState(null);
@@ -69,7 +72,11 @@ const DoctorAvailabilities = () => {
     try {
         const res = await addDoctorAvailabilities(payload);
         setRender((prev) => prev++);
-        toast.success('Successfully Added.')
+        toast.success('Successfully Added.');
+        navigate('/doctor',{
+          state: {
+          date : selectedDate
+        }});
     } catch (error) {
         toast.error('something went wrong.')
     }
