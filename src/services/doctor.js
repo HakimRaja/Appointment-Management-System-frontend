@@ -58,3 +58,34 @@ export const deleteAvailabilitySlot = async (availability_id) => {
     throw error;
   }
 };
+
+const CANCEL_APPOINTMENT_AND_REMOVE_AVAILABILITY_URL = '/doctordashboard/appointment';
+export const cancelAppointemntAndRemoveAvailability = async (availability_id) => {
+  try {
+    const {token} = JSON.parse(localStorage.getItem('User')) || '';
+    const headers = token ? {
+      Authorization : `Bearer ${token}`
+    } : {};
+
+    const res = await api.delete(`${CANCEL_APPOINTMENT_AND_REMOVE_AVAILABILITY_URL}/${availability_id}`,{
+      headers
+    })
+    return res;
+  } catch (error) {
+    throw error;
+  }
+}
+
+const GET_PATIENT_DETAILS_URL = '/doctordashboard/patient'
+export const getPatientDetails = async (patient_id) => {
+  try {
+    const {token} = JSON.parse(localStorage.getItem('User')) || '';
+    const headers = token ? {
+      Authorization : `Bearer ${token}`
+    } : {};
+    const res = await api.get(`${GET_PATIENT_DETAILS_URL}/${patient_id}`,{headers});
+    return res?.data;
+  } catch (error) {
+      throw error;
+  }
+}

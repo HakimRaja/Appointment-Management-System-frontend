@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import DateInput from '../components/dateinputs/DateInput';
 import dayjs from 'dayjs';
-import { deleteAvailabilitySlot, getAvailabilities } from '../services/doctor';
+import { cancelAppointemntAndRemoveAvailability, deleteAvailabilitySlot, getAvailabilities, getPatientDetails } from '../services/doctor';
 import { IoPersonCircle } from "react-icons/io5";
 import { toast } from 'sonner';
+import PatientDetailModal from '../components/modal/PatientDetailModal';
 
 const buttonClasses = {
     remove : 'p-2 m-2 bg-red-400 rounded-full hover:bg-red-500 hover:scale-105 transition ease-in-out',
@@ -19,6 +20,8 @@ const DoctorDashboard = () => {
   const [availabilitiesInfo,setAvailabilitiesInfo] = useState(null);
   const [isLoading,setIsLoading] = useState();
   const [render,setRender] = useState(1);
+  const [patientDetailModal , setPatientDetailModal] = useState(false);
+  const [patientDetails,setPatientDetails] = useState(null);
 
   const disabledDateFunc = (current) =>{
     return current && current < dayjs().startOf('day')
@@ -68,8 +71,56 @@ const DoctorDashboard = () => {
       setIsLoading(null);
     }
   }
+
   const removeConditionForButton = (availability_id)=>{
     return isLoading?.type === 'remove' && isLoading?.availability_id === availability_id;
+  }
+
+  const handleCancel = async (availability_id) => {
+    setIsLoading({type : 'cancel',availability_id});
+    try {
+      const res = await cancelAppointemntAndRemoveAvailability(availability_id);
+      toast.success('Appointment is cancelled and slot is removed.');
+      setAvailabilitiesInfo(prev => prev.filter(prev => prev.availability_id !== availability_id))
+    } catch (error) {
+        if (error?.response?.data?.message) {
+          return toast.error(error?.response?.data?.message);
+        }
+        toast.error('Something went wrong!');
+      }
+      finally{
+        setIsLoading(null);
+      }
+  }
+  
+  const cancelConditionForButton = (availability_id)=>{
+    return isLoading?.type === 'cancel' && isLoading?.availability_id === availability_id;
+  }
+
+  const handleSeeDetails = async (patient_id,availability_id) => {
+    setIsLoading({type : 'details',availability_id});
+    // toast.loading('Opening the details');
+    try {
+      const res = await getPatientDetails(patient_id);
+      setPatientDetails(res.patientDetails);
+      setPatientDetailModal(true);
+    } catch (error) {
+      if (error?.res?.data?.message) {
+        return toast.error(error?.res?.data?.message);
+      }
+      toast.error('Something Went Wrong');
+    }
+    finally{
+      setIsLoading(null);
+    }
+  }
+  const seeDetailsConditionForButton = (availability_id) =>{
+    return isLoading?.type === 'seeDetails' && availability_id === isLoading?.availability_id;
+  }
+
+  const handleOnClose = ()=>{
+    setPatientDetailModal(false);
+    setPatientDetails(null);
   }
   return (
     <div className='min-h-screen my-3'>
@@ -91,10 +142,16 @@ const DoctorDashboard = () => {
                     <h1>Start Time : {avail.start_time}</h1>
                     <h1>End Time   : {avail.end_time}</h1>
                     <h1>Status     : {avail?.status || <span>slot is free</span>}</h1>
-                    {avail?.status ? <button className={buttonClasses.detail}>See Details</button>:<button className={buttonClasses.remove} onClick={() => removeConditionForButton(avail.availability_id) ? '':handleRemove(avail.availability_id)}>{removeConditionForButton(avail.availability_id) ? 'Removing Slot':'Remove Slot'}</button>}
+                    {avail?.status ? 
+                    <><button className={buttonClasses.detail} onClick={() => seeDetailsConditionForButton(avail.availability_id) ? '':handleSeeDetails(avail.patient_id,avail.availability_id)}>{seeDetailsConditionForButton(avail.availability_id) ? 'Opening Details':'See Details'}</button> <button className={buttonClasses.cancel} onClick={() => cancelConditionForButton(avail.availability_id) ? '':handleCancel(avail.availability_id)}>{cancelConditionForButton(avail.availability_id) ? 'Cancelling':'Cancel Appointment'}</button></>
+                    : <button className={buttonClasses.remove} onClick={() => removeConditionForButton(avail.availability_id) ? '':handleRemove(avail.availability_id)}>{removeConditionForButton(avail.availability_id) ? 'Removing Slot':'Remove Slot'}</button>}
                 </div>
                 </div>)): <div>No slots found ...</div>}
             </div>
+            {patientDetailModal && <PatientDetailModal
+              handleOnClose={handleOnClose}
+              patient={patientDetails}
+            />}
         </div>
         
     </div>
