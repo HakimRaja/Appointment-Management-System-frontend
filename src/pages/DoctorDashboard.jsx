@@ -99,16 +99,17 @@ const DoctorDashboard = () => {
 
   const handleSeeDetails = async (patient_id,availability_id) => {
     setIsLoading({type : 'details',availability_id});
-    // toast.loading('Opening the details');
+    const toastId = toast.loading('Loading patient Details ...');
     try {
       const res = await getPatientDetails(patient_id);
+      toast.dismiss(toastId);
+      toast.success('Patient details loaded!');
       setPatientDetails(res.patientDetails);
       setPatientDetailModal(true);
     } catch (error) {
-      if (error?.res?.data?.message) {
-        return toast.error(error?.res?.data?.message);
-      }
-      toast.error('Something Went Wrong');
+      const err = error?.res?.data?.message || 'Something Went Wrong!';
+      toast.dismiss(toastId);
+      toast.error(err);
     }
     finally{
       setIsLoading(null);
