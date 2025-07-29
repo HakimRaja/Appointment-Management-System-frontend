@@ -104,9 +104,15 @@ const PatientAppointments = () => {
                         <h5 className='font-semibold'>Specializations : {appointment.specializations?.map((spec,index) => (<span key={index}> {spec} {index !== appointment.specializations.length-1 ? ', ':``}</span>))}</h5>
                         <div className='font-semibold'>Time : {appointment.start_time} - {appointment.end_time}</div>
                         <div className='font-semibold'>Date : {appointment.date.slice(0,10)}</div>
-                        <div className='font-semibold'>Status : {appointment.status}</div>
-                        <button className='bg-yellow-400 hover:bg-yellow-500 transition ease-in-out text-white rounded-full p-2 w-full hover:scale-105' onClick={() => handleUpdateButton(appointment.doctor_id,appointment.name,appointment.appointment_id)}>Update Appointment</button> {/*doctor_id is basically user_id from availability table */}
-                        <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full p-2 w-full hover:scale-105' onClick={() => handleDelete(appointment.appointment_id)}>Cancel Appointment</button>
+                        <div className='font-semibold'>Status : {appointment.status === 'cancelled' ? 
+                                                                    <span className='text-red-600'>Cancelled by the doctor</span> 
+                                                                        : 
+                                                                    appointment.status === 'scheduled' ? 
+                                                                        appointment.status 
+                                                                            : 
+                                                                        <span className='text-green-500'>{appointment.status}</span>}</div>
+                        {appointment.status !== 'completed' && <button className='bg-yellow-400 hover:bg-yellow-500 transition ease-in-out text-white rounded-full p-2 w-full hover:scale-105' onClick={() => handleUpdateButton(appointment.doctor_id,appointment.name,appointment.appointment_id)}>Update Appointment</button>} {/*doctor_id is basically user_id from availability table */}
+                        {appointment.status === 'scheduled' && <button className='bg-red-600 hover:bg-red-700 transition ease-in-out text-white rounded-full p-2 w-full hover:scale-105' onClick={() => handleDelete(appointment.appointment_id)}>Cancel Appointment</button>}
                     </div>
                 ))}
                 {isModalOpen && <PatientDashboardModal 
