@@ -2,14 +2,15 @@ import React from 'react';
 import { FaFacebookF, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const classNames = {
-    footer : 'bg-gray-200 w-full',
+    footer : 'bg-slate-800 w-full text-white',
     container : 'container mx-auto p-2',
     grids : 'grid grid-cols-1 sm:grid-cols-2 gap-6',
     divs : 'mb-2',
     heading : 'font-bold text-3xl mb-2',
     text : 'font-semibold text-xl',
     icons : 'flex gap-4 text-xl',
-    iconTransition : 'hover:scale-110 transition ease-in-out',
+    iconTransition : 'hover:scale-110 transition ease-in-out hover:bg-blue-500',
+    instaIconTransition : 'hover:scale-110 bg-gradient-to-r transition ease-in-out hover:from-red-600 hover:to-pink-600',
     line : 'my-6 border-gray-400',
     copyRights : 'text-center text-sm text-gray-600'
 }
@@ -41,7 +42,7 @@ const Footer = () => {
               <a href='https://facebook.com' target='_blank' className={classNames.iconTransition}>
                 <FaFacebookF />
               </a>
-              <a href='https://instagram.com' target='_blank' className={classNames.iconTransition}>
+              <a href='https://instagram.com' target='_blank' className={classNames.instaIconTransition}>
                 <FaInstagram />
               </a>
               <a href='https://linkedin.com' target='_blank' className={classNames.iconTransition}>
