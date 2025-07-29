@@ -9,7 +9,7 @@ const Navbar = () => {
     return (
         <nav className='bg-slate-800/50 sticky z-50 backdrop-blur-md border-b border-slate-700/40 shadow-md top-0'>
             <div className='font-semibold flex flex-col sm:flex-row items-center justify-between p-4 text-white'>
-            <div className='space-x-2'><Link to='/' className='hover:cursor-pointer hover:underline text-cyan-400 font-bold'>AMS</Link>
+            <div className='space-x-2'><Link to={user ? `/${user?.role}`:`/login`} className='hover:cursor-pointer hover:underline text-cyan-400 font-bold'>AMS</Link>
             {user?.role == 'patient' && <> <Link to='/patient/appointments' className='hover:cursor-pointer hover:underline'>Appointments</Link></>}
             {user?.role == 'doctor' && <> <Link to='/doctor/availability' className='hover:cursor-pointer hover:underline'>Add Availability</Link></>}
             </div>

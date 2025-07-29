@@ -1,6 +1,6 @@
 import React,{createContext,useState,useEffect,useContext, use} from "react";
 import api from "../api/api";
-import { checkauthentication, login, signup } from "../services/authServices";
+import { checkauthentication, login, signup, specializations } from "../services/authServices";
 import { getSignupInfo } from "../utils/authHelper";
 
 export const AuthContext = createContext();
@@ -62,16 +62,14 @@ export const AuthContextProvider = ({children})=>{
 
       }, []);
 
-      useEffect(() => {
-        api.get(GET_SPECIALIZATIONS_URL)
-        .then(response => {
-            setMedicalSpecializations(response.data.specializations)
-        })
-        .catch(error =>{
-            console.log(error);
-        })
-        
-      }, [])
+      const getSpecialization =async() =>{
+        try {
+          const res = await specializations();
+          return res?.data?.specializations;
+        } catch (error) {
+          return [];
+        }
+      }
 
       const loginUser = async(e) =>{
         e.preventDefault();
@@ -157,7 +155,7 @@ export const AuthContextProvider = ({children})=>{
       };
 
       return <AuthContext.Provider value={{user ,
-       medicalSpecializations ,
+       getSpecialization ,
         signupInfo , 
         loginInfo,
         signupError,

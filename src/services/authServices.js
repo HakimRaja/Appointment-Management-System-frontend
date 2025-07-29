@@ -36,3 +36,12 @@ export const checkauthentication = async(token)=>{
         throw (error)
     }
 }
+const GET_SPECIALIZATIONS_URL = '/auth/specializations';
+export const specializations = async () => {
+    try {
+        const res = await api.get(GET_SPECIALIZATIONS_URL);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+}
