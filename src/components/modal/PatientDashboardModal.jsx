@@ -30,7 +30,7 @@ const PatientDashboardModal = ({doc,handleCloseModal,handleSelectButton,error,su
     return (
     <div className='fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50'>
         <div className='bg-white p-6 rounded-lg w-full max-w-md space-x-2 space-y-2'>
-            <div className='text-right'><span className='bg-blue-500 hover:bg-blue-600 hover:scale-105 rounded-full transition ease-in-out'>X</span></div>
+            <div className='text-right'><span className='bg-blue-500 hover:bg-blue-600 hover:scale-105 rounded-full transition ease-in-out cursor-pointer' onClick={handleCloseModal}>X</span></div>
             <h1 className='font-semibold text-lg'>Doc. {doc?.name}</h1>
             <DateInput
             Label = 'Select Date'
