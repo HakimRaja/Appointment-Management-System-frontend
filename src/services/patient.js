@@ -1,12 +1,14 @@
 import api from "../api/api";
 
 const GET_DOCTORS_URL = '/patientDashboard/doctors';
-export const getDoctorsList = async(token) =>{
+export const getDoctorsList = async(pageNumber) =>{
     try {
-        const res = await api.get(GET_DOCTORS_URL,{
-            headers : {
-                'Authorization' : `Bearer ${token}`,
-            }});
+        const {token} = JSON.parse(localStorage.getItem('User')) || '';
+        const headers = token.length !== 0 ? {
+            Authorization : `Bearer ${token}`
+        } : {};
+        const queryParams = {pageNumber , doctorsPerPage : 4};
+        const res = await api.get(GET_DOCTORS_URL,{headers , params : queryParams});
         return res?.data;
     } catch (error) {
         console.log(error);
@@ -29,13 +31,17 @@ export const bookAppointment = async(token,availability_id)=>{
 }
 
 const APPOINTMENTS_URL = '/patientDashboard/appointments';
-export const getAppointmentsList = async(user_id,token)=>{
+export const getAppointmentsList = async(payload)=>{
     try {
-        const res = await api.get(`${APPOINTMENTS_URL}/${user_id}`,{
-            headers : {
-                'Authorization' : `Bearer ${token}`
-            }
-        });
+        const {token} = JSON.parse(localStorage.getItem('User')) || '';
+        const headers = token.length !== 0 ? {
+            Authorization : `Bearer ${token}`
+        }:{} ;
+        const queryParams = {
+            pageNumber : payload.pageNumber,
+            appointmentsPerPage : payload.appointmentsPerPage
+        };
+        const res = await api.get(APPOINTMENTS_URL,{headers,params : queryParams});
         return res.data;
     } catch (error) {
         throw error;
