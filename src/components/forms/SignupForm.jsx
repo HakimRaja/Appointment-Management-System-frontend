@@ -32,12 +32,12 @@ const SignupForm = () => {
     }
   }, [signupError]);
 
-  const callGetSpecializationFunc = async (params) => {
+  const callGetSpecializationFunc = async () => {
     try {
       const res = await getSpecialization();
       setMedicalSpecializations(res);
     } catch (error) {
-      
+      return toast.error(`Something went wrong!`);
     }
   }
   useEffect(() => {
