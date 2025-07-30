@@ -8,7 +8,7 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({children})=>{
     const GET_SPECIALIZATIONS_URL = '/auth/specializations';
     const CHECK_AUTHENTICATION_URL = '/auth/authorized';
-    const SIGNUP_FAIL_MESSAGE = 'Signup failed';
+    const SIGNUP_FAIL_MESSAGE = 'Something Went Wrong';
 
     const [medicalSpecializations,setMedicalSpecializations] = useState([]);//for signup
 
@@ -24,7 +24,7 @@ export const AuthContextProvider = ({children})=>{
         password: '',
         phone: '',
         dob: '',
-        role: 'admin',
+        role: 'patient',
         specialization : [],
         experience: '',
         history: ''
@@ -84,7 +84,7 @@ export const AuthContextProvider = ({children})=>{
           setUser(res);
           setIsAuthenticated(true);
         } catch (error) {
-          const errmsg =error?.response?.data?.message || error?.message || SIGNUP_FAIL_MESSAGE;
+          const errmsg =error?.response?.data?.message  || SIGNUP_FAIL_MESSAGE;
           setLoginError(errmsg);
         }
         finally{
@@ -110,7 +110,7 @@ export const AuthContextProvider = ({children})=>{
           setUser(res);
           setIsAuthenticated(true);
         } catch (error) {
-          const errmsg =error?.response?.data?.message || error?.message || error || SIGNUP_FAIL_MESSAGE;
+          const errmsg =error?.response?.data?.message || SIGNUP_FAIL_MESSAGE;
           setSignupError(errmsg);
         }
         finally{
@@ -139,7 +139,7 @@ export const AuthContextProvider = ({children})=>{
           password: '',
           phone: '',
           dob: '',
-          role: 'admin',
+          role: 'patient',
           specialization: [],
           experience: '',
           history: ''

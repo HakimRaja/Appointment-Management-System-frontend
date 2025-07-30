@@ -8,7 +8,6 @@ export const signup = async(data) =>{
         const response = await api.post(SIGNUP_URL,data);
         return response.data;
     } catch (error) {
-        console.log(error);
         throw (error)
     }
     

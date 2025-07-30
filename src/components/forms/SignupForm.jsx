@@ -24,8 +24,17 @@ const SignupForm = () => {
     }
   }
   const disabledDateFunc = (current) =>{
-    return current && current > dayjs().startOf('day');
+    return current && current >= dayjs().startOf('day');
   }
+  const disabledDateFuncForExperience = (current) =>{
+    if (signupInfo.dob.length === 0) {
+      return true;
+    }
+    const dob = dayjs(signupInfo.dob);
+    const minAge18 = dob.add(18,'year')
+    return current && (current >= dayjs().startOf('day') || current <= minAge18);
+  }
+
   useEffect(() => {
     if (signupError) {
       toast.error(signupError);
@@ -91,6 +100,7 @@ const SignupForm = () => {
     {...SIGNUP_FIELDS.experience}
     onChange={(date,dateString) => updateSignupInfo({...signupInfo,experience:dateString})}
     value={signupInfo.experience}
+    disabledDateFunc={disabledDateFuncForExperience}
     />
     <SpecializationSelect
     {...SIGNUP_FIELDS.specialization}
