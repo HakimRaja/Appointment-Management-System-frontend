@@ -2,6 +2,7 @@ import React,{createContext,useState,useEffect,useContext, use} from "react";
 import api from "../api/api";
 import { checkauthentication, login, signup, specializations } from "../services/authServices";
 import { getSignupInfo } from "../utils/authHelper";
+import { toast } from "sonner";
 
 export const AuthContext = createContext();
 
@@ -30,7 +31,6 @@ export const AuthContextProvider = ({children})=>{
         history: ''
       });
 
-      console.log(signupInfo);
       const [loginSuccess, setLoginSuccess] = useState(false);
       const [loginError , setLoginError] = useState(null);
       const [isLoginLoading , setIsLoginLoading] = useState(false);
@@ -83,6 +83,7 @@ export const AuthContextProvider = ({children})=>{
           localStorage.setItem('User',JSON.stringify(res));
           setUser(res);
           setIsAuthenticated(true);
+          toast.success('Login Successful')
         } catch (error) {
           const errmsg =error?.response?.data?.message  || SIGNUP_FAIL_MESSAGE;
           setLoginError(errmsg);
@@ -94,24 +95,23 @@ export const AuthContextProvider = ({children})=>{
 
       const signupUser = async(e)=>{
         e.preventDefault();
-        console.log(signupInfo);
         setIsSignupLoading(true);
         setSignupError(null);
         setSignupSuccess(false);
         try {
           const info = getSignupInfo(signupInfo);
           if (!info.check) {
-            throw (info.message);
+            throw (info);
           }
-          console.log(info.data);
           const res = await signup(info.data);
           setSignupSuccess(true)
           localStorage.setItem('User',JSON.stringify(res));
           setUser(res);
           setIsAuthenticated(true);
+          toast.success('SignUp Successful')
         } catch (error) {
-          const errmsg =error?.response?.data?.message || SIGNUP_FAIL_MESSAGE;
-          setSignupError(errmsg);
+          const errmsg =error?.response?.data?.message || error?.message || SIGNUP_FAIL_MESSAGE;
+          toast.error(errmsg)
         }
         finally{
           setIsSignupLoading(false)

@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { toast } from 'sonner';
 
 const SignupForm = () => {
-  const {getSpecialization , signupInfo ,signupError,signupSuccess,isSignupLoading , signupUser,updateSignupInfo } = useContext(AuthContext);
+  const {getSpecialization , signupInfo ,signupSuccess,isSignupLoading , signupUser,updateSignupInfo } = useContext(AuthContext);
   const [medicalSpecializations,setMedicalSpecializations] = useState(null);
 
   const handleChange = (e)=>{
@@ -35,11 +35,6 @@ const SignupForm = () => {
     return current && (current >= dayjs().startOf('day') || current <= minAge18);
   }
 
-  useEffect(() => {
-    if (signupError) {
-      toast.error(signupError);
-    }
-  }, [signupError]);
 
   const callGetSpecializationFunc = async () => {
     try {
@@ -101,6 +96,7 @@ const SignupForm = () => {
     onChange={(date,dateString) => updateSignupInfo({...signupInfo,experience:dateString})}
     value={signupInfo.experience}
     disabledDateFunc={disabledDateFuncForExperience}
+    nextLineText = {true}
     />
     <SpecializationSelect
     {...SIGNUP_FIELDS.specialization}
