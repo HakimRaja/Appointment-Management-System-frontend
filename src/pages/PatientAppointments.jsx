@@ -17,7 +17,7 @@ const PatientAppointments = () => {
     const [error,setError] = useState(null);
     const [appointmentId,setAppointmentId] = useState(null);
     const [pageNumber,setPageNumber] = useState(1);
-    const [appointmentsPerPage,setAppointmentsPerPage] = useState(1);
+    const [appointmentsPerPage,setAppointmentsPerPage] = useState(4);
     const [isNextLoading,setIsNextLoading] = useState(false);
     const [check,setCheck] = useState(false);
 
