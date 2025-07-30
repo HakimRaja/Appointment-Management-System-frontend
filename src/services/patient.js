@@ -1,13 +1,13 @@
 import api from "../api/api";
 
 const GET_DOCTORS_URL = '/patientDashboard/doctors';
-export const getDoctorsList = async(pageNumber) =>{
+export const getDoctorsList = async(payload) =>{
     try {
         const {token} = JSON.parse(localStorage.getItem('User')) || '';
         const headers = token.length !== 0 ? {
             Authorization : `Bearer ${token}`
         } : {};
-        const queryParams = {pageNumber , doctorsPerPage : 4};
+        const queryParams = {...payload , doctorsPerPage : 4};
         const res = await api.get(GET_DOCTORS_URL,{headers , params : queryParams});
         return res?.data;
     } catch (error) {

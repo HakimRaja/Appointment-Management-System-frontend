@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { bookAppointment, getDoctorsList } from '../services/patient';
 import PatientDashboardModal from "../components/modal/PatientDashboardModal";
 import { toast } from "sonner";
+import Input from "../components/input/Input";
 
 
 const PatientDashboard = () => { // now i have to integrate the backend in comming data
@@ -18,7 +19,14 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   const [pageNumber , setPageNumber] = useState(1);
   const [isNextSelected,setIsNextSelected] = useState(false);
   const [check,setCheck] = useState(false)
+  const [input,setInput] = useState('');
+  const [textInput, setTextInput] = useState('');
+  const [run,setRun] = useState(1);
+  const [checkMount,setCheckMount] = useState(1);
 
+  const handleChange = (e) =>{
+    setTextInput(e.target.value);
+  }
   const handleBookClick = (doc) =>{
     setSelectedDoctor(doc);
     setError(null);
@@ -70,23 +78,23 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
     const toastId = toast.loading('Searching for the doctors!');
     try {
       if (!check) {
-      const res = await getDoctorsList(pageNumber);
-      toast.dismiss(toastId);
+      const payload = {pageNumber,input}
+      const res = await getDoctorsList(payload);
       if (res.finalDoctors.length === 0 && pageNumber !== 1) {
         setCheck(true);
-        toast.warning('You are on the last page!');  
-        return setPageNumber(prev => --prev)
+        setPageNumber(prev => --prev)
       }
-      return setDoctorsInfo(res.finalDoctors);
+      else{
+      setDoctorsInfo(res.finalDoctors);}
     }
-    toast.dismiss(toastId);
-    setCheck(false);
     } catch (error) {
       console.log(error);
       setDoctorsInfoError(error?.response?.data?.message)
     }
     finally{
       setIsNextSelected(false);
+      toast.dismiss(toastId);
+      setCheck(false);
     }
   }
   
@@ -96,12 +104,37 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
       await callGetDoctorsListFunc();
     })();
     
-  }, [pageNumber]);
+  }, [pageNumber,run]);
+  
+  useEffect(() => {
+    if (checkMount === 1) {
+      return setCheckMount(2);
+    }
+    setPageNumber(1);
+    setRun(prev => ++prev)
+  }, [input])
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      setInput(textInput);
+    }, 400);
+
+    return ()=>{
+      clearTimeout(handle);
+    }
+  }, [textInput])
   
   return (
     <>
     <div className='m-3 min-h-screen '> <p className="text-center font-semibold text-lg w-full my-4">Book An Appointment</p>
-        <div className='grid grid-cols-1 sm:grid-cols-2'>
+        <div >
+          <Input
+          placeholder= 'Search Doctor By Name'
+          inputClass=' w-full border border-black rounded p-1 text-center'
+          value={textInput}
+          onChange={handleChange}
+          />
+        </div>
+        <div className='grid grid-cols-1 sm:grid-cols-2 '>
             {doctorsInfo && doctorsInfo.map((doc,index) =>(
                 <div className='border p-7 bg-gray-100 m-2 shadow space-y-2' key={index}>
                     <div><img src={`${doc.picture}`} alt="Doctor's image" className="w-full h-80 object-contain rounded bg-white"/></div>
