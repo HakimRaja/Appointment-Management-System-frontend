@@ -17,6 +17,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   const [render , setRender] = useState(1);
   const [pageNumber , setPageNumber] = useState(1);
   const [isNextSelected,setIsNextSelected] = useState(false);
+  const [check,setCheck] = useState(false)
 
   const handleBookClick = (doc) =>{
     setSelectedDoctor(doc);
@@ -68,13 +69,18 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
   const callGetDoctorsListFunc = async () => {
     const toastId = toast.loading('Searching for the doctors!');
     try {
+      if (!check) {
       const res = await getDoctorsList(pageNumber);
       toast.dismiss(toastId);
       if (res.finalDoctors.length === 0 && pageNumber !== 1) {
+        setCheck(true);
         toast.warning('You are on the last page!');  
         return setPageNumber(prev => --prev)
       }
-      setDoctorsInfo(res.finalDoctors);
+      return setDoctorsInfo(res.finalDoctors);
+    }
+    toast.dismiss(toastId);
+    setCheck(false);
     } catch (error) {
       console.log(error);
       setDoctorsInfoError(error?.response?.data?.message)

@@ -17,8 +17,9 @@ const PatientAppointments = () => {
     const [error,setError] = useState(null);
     const [appointmentId,setAppointmentId] = useState(null);
     const [pageNumber,setPageNumber] = useState(1);
-    const [appointmentsPerPage,setAppointmentsPerPage] = useState(4);
+    const [appointmentsPerPage,setAppointmentsPerPage] = useState(1);
     const [isNextLoading,setIsNextLoading] = useState(false);
+    const [check,setCheck] = useState(false);
 
     const handleNext = ()=>{
         setIsNextLoading(true);
@@ -32,14 +33,18 @@ const PatientAppointments = () => {
         
         try {
             const payload = {pageNumber,appointmentsPerPage}
-            
+            if (!check) {            
             const res = await getAppointmentsList(payload);
             toast.dismiss(toastId);
-            if (res?.finalAppointments.length === 0) {
+            if (res?.finalAppointments.length === 0 && pageNumber !== 1) {
+                setCheck(true);
                 setPageNumber((prev=>--prev));
                 return toast.warning('You are on the last page!')
             }
-            setAppointmentInfo(res.finalAppointments);
+            return setAppointmentInfo(res.finalAppointments);
+        }
+        toast.dismiss(toastId);
+        setCheck(false);
         } catch (error) {
             const err = error?.response?.data?.message || 'Something Went Wrong';
             toast.error(err);
@@ -153,7 +158,7 @@ const PatientAppointments = () => {
                     <button className='p-2 rounded-r rounded-full bg-gradient-to-r from-red-500 to-pink-500 hover:scale-105 hover:from-red-400 hover:to-pink-400 transition ease-in-out' disabled={pageNumber === 1} onClick={handlePrev}>Prev</button>
                 </div>
                 <div>
-                    <span className='font-bold text-black'>Page : {pageNumber}</span>
+                    <span className='font-bold text-black'>Page : {isNextLoading ? pageNumber-1 : pageNumber}</span>
                 </div>
                 <div>
                     <button className='p-2 rounded-l rounded-full bg-gradient-to-r from-green-500 to-emerald-500 hover:scale-105 hover:from-green-400 hover:to-emerald-400 transition ease-in-out' disabled={isNextLoading || appointmentInfo?.length !== appointmentsPerPage} onClick={handleNext}>Next</button>
