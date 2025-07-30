@@ -32,7 +32,7 @@ export const SIGNUP_FIELDS = {
         name : 'dob',
         required : true
     },
-    roles : ['admin','doctor','patient'],
+    roles : ['patient','doctor'],
     roleSelect : {
         label : 'Select Role',
         name : 'role',
@@ -41,7 +41,7 @@ export const SIGNUP_FIELDS = {
 
     },
     experience : {
-        label : 'Experience(Starting Date)',
+        label : 'Experience(Starting Date) (counts after 18y from dob)',
         required:true,
         name:'experience'
     },
