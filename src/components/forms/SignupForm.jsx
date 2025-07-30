@@ -11,7 +11,9 @@ import dayjs from 'dayjs';
 import { toast } from 'sonner';
 
 const SignupForm = () => {
-  const {medicalSpecializations , signupInfo ,signupError,signupSuccess,isSignupLoading , signupUser,updateSignupInfo } = useContext(AuthContext);
+  const {getSpecialization , signupInfo ,signupError,signupSuccess,isSignupLoading , signupUser,updateSignupInfo } = useContext(AuthContext);
+  const [medicalSpecializations,setMedicalSpecializations] = useState(null);
+
   const handleChange = (e)=>{
     if (e.target.multiple) {
       const selectedSpecializations = Array.from(e.target.selectedOptions).map(option => option.value);
@@ -29,6 +31,20 @@ const SignupForm = () => {
       toast.error(signupError);
     }
   }, [signupError]);
+
+  const callGetSpecializationFunc = async () => {
+    try {
+      const res = await getSpecialization();
+      setMedicalSpecializations(res);
+    } catch (error) {
+      return toast.error(`Something went wrong!`);
+    }
+  }
+  useEffect(() => {
+    (async () => {
+      await callGetSpecializationFunc();
+    })()
+  }, []);
   
   return (
     <>
