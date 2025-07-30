@@ -104,7 +104,7 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
         <div className='grid grid-cols-1 sm:grid-cols-2'>
             {doctorsInfo && doctorsInfo.map((doc,index) =>(
                 <div className='border p-7 bg-gray-100 m-2 shadow space-y-2' key={index}>
-                    <div className=" flex justify-center"><IoPersonCircle size={40}/></div>
+                    <div><img src={`${doc.picture}`} alt="Doctor's image" className="w-full h-80 object-contain rounded bg-white"/></div>
                     <h5 className='font-bold'>Doc. {doc.name}</h5>
                     <h5 className='font-semibold'>Email : {doc.email}</h5>
                     <h5 className='font-semibold'>Phone : {doc.phone_number}</h5>  
