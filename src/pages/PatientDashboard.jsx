@@ -167,13 +167,13 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
     </div>
     <div className="border p-2 mb-2 rounded-full bg-slate-300 flex flex-row justify-between items-center">
               <div>
-                <button className="m-1 text-white font-semibold border rounded-r rounded-full p-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 hover:scale-105 transition ease-in-out" onClick={handlePrev} disabled={pageNumber === 1}>Prev</button>
+                <button className={`m-1 text-white font-semibold border rounded-r rounded-full p-2 ${pageNumber !==1 ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 hover:scale-105 transition ease-in-out' : 'bg-gray-500'}`} onClick={handlePrev} disabled={pageNumber === 1}>Prev</button>
               </div>
               <div>
                 <span className="font-bold">Page : {isNextSelected ? pageNumber-1:pageNumber}</span>
               </div>
               <div>
-                <button className="m-1 text-white font-semibold border rounded-l rounded-full p-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 hover:scale-105 transition ease-in-out" onClick={handleNext} disabled={isNextSelected || doctorsInfo.length !== 4}>Next</button>
+                <button className={`m-1 text-white font-semibold border rounded-l rounded-full p-2  ${!(isNextSelected || doctorsInfo.length !== 4) ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 hover:scale-105 transition ease-in-out':'bg-gray-500'}`} onClick={handleNext} disabled={isNextSelected || doctorsInfo.length !== 4}>Next</button>
               </div>
     </div>
     </>

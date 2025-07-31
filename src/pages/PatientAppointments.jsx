@@ -156,13 +156,13 @@ const PatientAppointments = () => {
         </div>
         <div className='w-full flex flex-row justify-between items-center border p-2 mb-2 bg-slate-300 rounded-full font-semibold text-white'>
                 <div>
-                    <button className='p-2 rounded-r rounded-full bg-gradient-to-r from-red-500 to-pink-500 hover:scale-105 hover:from-red-400 hover:to-pink-400 transition ease-in-out' disabled={pageNumber === 1} onClick={handlePrev}>Prev</button>
+                    <button className={`p-2 rounded-r rounded-full ${pageNumber !== 1 ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:scale-105 hover:from-red-400 hover:to-pink-400 transition ease-in-out':'bg-gray-500'}`} disabled={pageNumber === 1} onClick={handlePrev}>Prev</button>
                 </div>
                 <div>
                     <span className='font-bold text-black'>Page : {isNextLoading ? pageNumber-1 : pageNumber}</span>
                 </div>
                 <div>
-                    <button className='p-2 rounded-l rounded-full bg-gradient-to-r from-green-500 to-emerald-500 hover:scale-105 hover:from-green-400 hover:to-emerald-400 transition ease-in-out' disabled={isNextLoading || appointmentInfo?.length !== appointmentsPerPage} onClick={handleNext}>Next</button>
+                    <button className={`p-2 rounded-l rounded-full ${!(isNextLoading || appointmentInfo?.length !== appointmentsPerPage) ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:scale-105 hover:from-green-400 hover:to-emerald-400 transition ease-in-out':'bg-gray-500'}`} disabled={isNextLoading || appointmentInfo?.length !== appointmentsPerPage} onClick={handleNext}>Next</button>
                 </div>
             </div> 
         </>

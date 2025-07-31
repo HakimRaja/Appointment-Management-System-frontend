@@ -25,6 +25,10 @@ const DoctorDashboard = () => {
   const [patientDetailModal , setPatientDetailModal] = useState(false);
   const [patientDetails,setPatientDetails] = useState(null);
   const [isSelectedDateToday,setIsSelectedDateToday] = useState({check : false , timeRightNow : null});
+  // const [isNextLoading,setIsNextLoading] = useState(false);
+  // const [pageNumber,setPageNumber] = useState(1);
+  // const [slotsPerPage,setSlotsPerPage] = useState(6);
+
   const location = useLocation();
   const passedState = location.state;
   useEffect(() => {
@@ -33,7 +37,13 @@ const DoctorDashboard = () => {
     }
   }, [])
   
-
+  // const handleNext = () =>{
+  //   isNextLoading(true);
+  //   setPageNumber(prev => ++prev)
+  // }
+  // const handlePrev =()=>{
+  //   setPageNumber(prev => --prev);
+  // }
 
   const disabledDateFunc = (current) =>{
     return current && current < dayjs().startOf('day')
@@ -56,11 +66,18 @@ const DoctorDashboard = () => {
   /*
   USE MEMO FOR GETTING AVAILABILITIES AS PER THE DATE
   */
+ const filterConditionForUseMemo = (start_time)=>{
+  const timeRightNow = checkTodaysDate(selectedDate);
+  if (timeRightNow) {
+    return (parseInt(timeRightNow.slice(0,2) + timeRightNow.slice(3,5)) > parseInt(start_time.slice(0,2) + start_time.slice(3,5)));
+  }
+  return false;
+ }
   const getAvailabilitiesByDateFunc = () =>{
     if (!availabilitiesInfo || availabilitiesInfo?.lenght == 0) {
       return [];
   }
-  return availabilitiesInfo.filter((avail) => avail.date.slice(0,10) == selectedDate)
+  return availabilitiesInfo.filter((avail) => {return avail.date.slice(0,10) == selectedDate && (!filterConditionForUseMemo(avail.start_time) || avail?.status)})
           .sort((a,b) => parseInt(a.start_time.slice(0,2) + a.start_time.slice(3,5)) - parseInt(b.start_time.slice(0,2) + b.start_time.slice(3,5)));
   }
   const getAvailabilitiesByDate = useMemo(() => {
@@ -209,7 +226,19 @@ const DoctorDashboard = () => {
               patient={patientDetails}
             />}
         </div>
-        
+        {/* {
+        // selectedDate && 
+        <div className='flex flex-row justify-between p-2 bg-slate-300 rounded-full text-white mt-3'>
+              <div>
+                    <button className='p-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-r rounded-full hover:scale-105 hover:from-red-400 hover:to-pink-400 transition ease-in-out' disabled={pageNumber === 1} onClick={handlePrev}>Prev</button>
+              </div>
+              <div className='text-black font-semibold p-2'>
+                    Page : {isNextLoading ? pageNumber - 1 : pageNumber}
+              </div>
+              <div>
+                    <button className='p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-l rounded-full hover:scale-105 hover:from-green-400 hover:to-emerald-400 transition ease-in-out' disabled={availabilitiesInfo?.length !== slotsPerPage} onClick={handleNext}>Next</button>
+              </div>
+        </div>} */}
     </div>
   )
 }
