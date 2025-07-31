@@ -47,6 +47,15 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
     try {
      const res = await bookAppointment(user?.token , slot?.value);
      setRender(prev => ++prev);
+     console.log(slot?.value)
+     doctorsInfo.map(doc => {
+      doc.availabilities.map(av =>{
+        if (av.availability_id == slot?.value) {
+          av.booked_by_me = true;
+          av.is_booked = true;
+        }
+      })
+     })
      setSuccess('Slot booked successfully.');
      handleCloseModal();
     } catch (error) {
@@ -88,8 +97,8 @@ const PatientDashboard = () => { // now i have to integrate the backend in commi
       setDoctorsInfo(res.finalDoctors);}
     }
     } catch (error) {
-      console.log(error);
-      setDoctorsInfoError(error?.response?.data?.message)
+        const err = error?.response?.data?.message || 'Something Went Wrong';
+        toast.error(err);
     }
     finally{
       setIsNextSelected(false);

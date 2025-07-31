@@ -39,18 +39,19 @@ const PatientAppointments = () => {
             if (res?.finalAppointments.length === 0 && pageNumber !== 1) {
                 setCheck(true);
                 setPageNumber((prev=>--prev));
-                return toast.warning('You are on the last page!')
             }
-            return setAppointmentInfo(res.finalAppointments);
+            else{
+                return setAppointmentInfo(res.finalAppointments);
+            }
         }
-        toast.dismiss(toastId);
-        setCheck(false);
         } catch (error) {
             const err = error?.response?.data?.message || 'Something Went Wrong';
             toast.error(err);
         }
         finally{
             setIsNextLoading(false);
+            toast.dismiss(toastId);
+            setCheck(false);
         }
     }
     useEffect(() => {
