@@ -86,7 +86,7 @@ export const AuthContextProvider = ({children})=>{
           toast.success('Login Successful')
         } catch (error) {
           const errmsg =error?.response?.data?.message  || SIGNUP_FAIL_MESSAGE;
-          setLoginError(errmsg);
+          toast.error(errmsg);
         }
         finally{
           setIsLoginLoading(false)
@@ -126,6 +126,8 @@ export const AuthContextProvider = ({children})=>{
       }
     
       const logoutUser = () =>{
+        clearSignupState();
+        clearLoginState();
         localStorage.removeItem('User');
         setUser(null);
         setIsAuthenticated(false);
