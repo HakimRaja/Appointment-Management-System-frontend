@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { addDoctorAvailabilities, getAvailabilities } from '../services/doctor';
+import { addDoctorAvailabilities, getAllAvailabilities } from '../services/doctor';
 import { AuthContext } from '../context/AuthContext';
 import Button from '../components/buttons/Button';
 import DateInput from '../components/dateinputs/DateInput';
@@ -47,7 +47,7 @@ const DoctorAvailabilities = () => {
    */
   const callGetAvailabilitiesFunc = async()=>{
     try {
-      const res = await getAvailabilities();
+      const res = await getAllAvailabilities();
       setAvailabilities(res.availabilities)
     } catch (error) {
       err => console.log(err)
