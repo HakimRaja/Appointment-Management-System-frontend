@@ -25,9 +25,11 @@ const DoctorDashboard = () => {
   const [patientDetailModal , setPatientDetailModal] = useState(false);
   const [patientDetails,setPatientDetails] = useState(null);
   const [isSelectedDateToday,setIsSelectedDateToday] = useState({check : false , timeRightNow : null});
-  // const [isNextLoading,setIsNextLoading] = useState(false);
-  // const [pageNumber,setPageNumber] = useState(1);
-  // const [slotsPerPage,setSlotsPerPage] = useState(6);
+  const [isNextLoading,setIsNextLoading] = useState(false);
+  const [pageNumber,setPageNumber] = useState(1);
+  const [slotsPerPage,setSlotsPerPage] = useState(6);
+  const [check,setCheck] = useState(false);
+  const [mount,setMount] = useState(1);
 
   const location = useLocation();
   const passedState = location.state;
@@ -37,13 +39,13 @@ const DoctorDashboard = () => {
     }
   }, [])
   
-  // const handleNext = () =>{
-  //   isNextLoading(true);
-  //   setPageNumber(prev => ++prev)
-  // }
-  // const handlePrev =()=>{
-  //   setPageNumber(prev => --prev);
-  // }
+  const handleNext = () =>{
+    setIsNextLoading(true);
+    setPageNumber(prev => ++prev)
+  }
+  const handlePrev =()=>{
+    setPageNumber(prev => --prev);
+  }
 
   const disabledDateFunc = (current) =>{
     return current && current < dayjs().startOf('day')
@@ -52,51 +54,39 @@ const DoctorDashboard = () => {
   const checkDateCondition = (start_time)=>{
     return isSelectedDateToday.timeRightNow && (parseInt(isSelectedDateToday.timeRightNow.slice(0,2) + isSelectedDateToday.timeRightNow.slice(3,5)) > parseInt(start_time.slice(0,2) + start_time.slice(3,5)));
   }
-
-  useEffect(() => { 
-  const timeRightNow = checkTodaysDate(selectedDate);
-  if (timeRightNow) {
-    setIsSelectedDateToday({check : true , timeRightNow});
-  }
-  else{
-    setIsSelectedDateToday({check : false , timeRightNow : null});
-  }
-  }, [selectedDate])
-  
-  /*
-  USE MEMO FOR GETTING AVAILABILITIES AS PER THE DATE
-  */
- const filterConditionForUseMemo = (start_time)=>{
-  const timeRightNow = checkTodaysDate(selectedDate);
-  if (timeRightNow) {
-    return (parseInt(timeRightNow.slice(0,2) + timeRightNow.slice(3,5)) > parseInt(start_time.slice(0,2) + start_time.slice(3,5)));
-  }
-  return false;
- }
-  const getAvailabilitiesByDateFunc = () =>{
-    if (!availabilitiesInfo || availabilitiesInfo?.lenght == 0) {
-      return [];
-  }
-  return availabilitiesInfo.filter((avail) => {return avail.date.slice(0,10) == selectedDate && (!filterConditionForUseMemo(avail.start_time) || avail?.status)})
-          .sort((a,b) => parseInt(a.start_time.slice(0,2) + a.start_time.slice(3,5)) - parseInt(b.start_time.slice(0,2) + b.start_time.slice(3,5)));
-  }
-  const getAvailabilitiesByDate = useMemo(() => {
-      return getAvailabilitiesByDateFunc();
-  }, [selectedDate,availabilitiesInfo]);
-
   
   const callGetAvailabilitiesFunc = async()=>{
     try {
-      const res = await getAvailabilities();
-      setAvailabilitiesInfo(res.availabilities)
+      if (selectedDate?.length !== 0 && selectedDate && !check) {
+        const payload = {selectedDate,pageNumber,slotsPerPage}
+        const res = await getAvailabilities(payload);
+        if (res.availabilities.length === 0 && pageNumber !==1) {
+          setCheck(true);
+          setPageNumber(prev => --prev);
+          return;
+        }
+        setAvailabilitiesInfo(res.availabilities)
+      }
     } catch (error) {
       err => console.log(err)
+    }
+    finally{
+      setIsNextLoading(false);
+      setCheck(false);
     }
   }
 
   useEffect(() => {
+    if (mount === 1) {
+      return;
+    }
     (async () => await callGetAvailabilitiesFunc())(); 
-  }, [render])
+  }, [render,pageNumber,mount]);
+  useEffect(() => {
+    setPageNumber(1);
+    setMount(prev => ++prev);
+  }, [selectedDate])
+  
 
   const handleRemove = async(availability_id)=>{
     setIsLoading({type : 'remove',availability_id})
@@ -198,7 +188,7 @@ const DoctorDashboard = () => {
 
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2'>
-                {selectedDate && getAvailabilitiesByDate?.length > 0 ? getAvailabilitiesByDate?.map((avail,index) => (<div key={index} className='m-1 text-l bg-slate-700'>
+                {selectedDate && availabilitiesInfo?.length > 0 ? availabilitiesInfo?.map((avail,index) => (<div key={index} className='m-1 text-l bg-slate-700'>
                 <div className='space-y-4 text-left p-3'>
                     <h1>Start Time : {avail.start_time}</h1>
                     <h1>End Time   : {avail.end_time}</h1>
@@ -226,19 +216,19 @@ const DoctorDashboard = () => {
               patient={patientDetails}
             />}
         </div>
-        {/* {
+         {
         // selectedDate && 
         <div className='flex flex-row justify-between p-2 bg-slate-300 rounded-full text-white mt-3'>
               <div>
-                    <button className='p-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-r rounded-full hover:scale-105 hover:from-red-400 hover:to-pink-400 transition ease-in-out' disabled={pageNumber === 1} onClick={handlePrev}>Prev</button>
+                    <button className={`p-2 rounded-r rounded-full ${pageNumber === 1 ? 'bg-gray-500':'bg-gradient-to-r from-red-500 to-pink-500 hover:scale-105 hover:from-red-400 hover:to-pink-400 transition ease-in-out'}`} disabled={pageNumber === 1} onClick={handlePrev}>Prev</button>
               </div>
               <div className='text-black font-semibold p-2'>
                     Page : {isNextLoading ? pageNumber - 1 : pageNumber}
               </div>
               <div>
-                    <button className='p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-l rounded-full hover:scale-105 hover:from-green-400 hover:to-emerald-400 transition ease-in-out' disabled={availabilitiesInfo?.length !== slotsPerPage} onClick={handleNext}>Next</button>
+                    <button className={`p-2  rounded-l rounded-full ${(isNextLoading || availabilitiesInfo?.length !== slotsPerPage) ? 'bg-gray-500':'bg-gradient-to-r from-green-500 to-emerald-500 hover:scale-105 hover:from-green-400 hover:to-emerald-400 transition ease-in-out'} `} disabled={isNextLoading || availabilitiesInfo?.length !== slotsPerPage} onClick={handleNext}>Next</button>
               </div>
-        </div>} */}
+        </div>} 
     </div>
   )
 }
