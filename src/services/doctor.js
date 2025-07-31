@@ -2,7 +2,7 @@ import api from "../api/api";
 
 
 const GET_DOCTOR_AVAILABILITIES_URL = "/doctordashboard/availabilities";
-export const getAvailabilities = async () => {
+export const getAvailabilities = async (payload) => {
   try {
     const { token } = JSON.parse(localStorage.getItem("User")) || "";
     const headers = token.length !==0 ?  
@@ -10,12 +10,28 @@ export const getAvailabilities = async () => {
           Authorization: `Bearer ${token}`,
         }: {};
 
-    const res = await api.get(`${GET_DOCTOR_AVAILABILITIES_URL}`,{headers});
+    const res = await api.get(`${GET_DOCTOR_AVAILABILITIES_URL}`,{headers,params : payload});
     return res?.data;
   } catch (error) {
     throw error;
   }
 };
+const GET_DOCTOR_AVAILABILITIES_ALL_URL = '/doctordashboard/availabilities/all';
+export const getAllAvailabilities = async () => {
+  try {
+    const { token } = JSON.parse(localStorage.getItem("User")) || "";
+    const headers = token.length !==0 ?  
+        {
+          Authorization: `Bearer ${token}`,
+        }: {};
+
+    const res = await api.get(`${GET_DOCTOR_AVAILABILITIES_ALL_URL}`,{headers});
+    return res?.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const ADD_AVAILABILITIES_URL = "/doctordashboard/availabilities";
 export const addDoctorAvailabilities = async (payload) => {
   try {
