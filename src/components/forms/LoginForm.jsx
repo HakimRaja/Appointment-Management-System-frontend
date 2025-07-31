@@ -7,13 +7,8 @@ import { LOGIN_FIELDS } from '../../constants/loginFields';
 import { toast } from 'sonner';
 
 const LoginForm = () => {
-  const {loginInfo ,loginError,loginSuccess,isLoginLoading , loginUser,updateLoginInfo } = useContext(AuthContext);
+  const {loginInfo ,loginSuccess,isLoginLoading , loginUser,updateLoginInfo } = useContext(AuthContext);
   
-  useEffect(() => {
-    if (loginError) {
-      toast.error(loginError);
-    }
-  }, [loginError])
   
 
   const handleChange = (e)=>{

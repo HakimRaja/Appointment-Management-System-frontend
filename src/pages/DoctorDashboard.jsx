@@ -167,9 +167,9 @@ const DoctorDashboard = () => {
     }
   }
   return (
-    <div className='min-h-screen my-3'>
+    <div className='my-3'>
         <div className='text-center text-lg font-extrabold'>Doctor Dashboard</div>
-        <div className='bg-gradient-to-r from-slate-200 via-slate-300 to-slate-400 text-white p-2 text-center'>
+        <div className='bg-gradient-to-r from-slate-200 via-slate-300 to-slate-400 text-white p-2 text-center min-h-screen'>
             <div className='font-bold'>See Status Of Availabilities</div>
             <div className='flex justify-center'>
                 <DateInput
@@ -189,7 +189,7 @@ const DoctorDashboard = () => {
                     {avail?.status == 'scheduled' &&
                       <>
                         <button className={buttonClasses.detail} onClick={() => seeDetailsConditionForButton(avail.availability_id) || handleSeeDetails(avail.patient_id,avail.availability_id)}>{seeDetailsConditionForButton(avail.availability_id) ? 'Opening Details':'See Details'}</button>
-                        { checkDateCondition(avail.start_time) ? 
+                        { checkDateCondition(avail.end_time) ? 
                         <button className={buttonClasses.update} onClick={() => handleCompleted(avail.availability_id)}>Mark as completed</button>
                           :
                         <button className={buttonClasses.cancel} onClick={() => cancelConditionForButton(avail.availability_id) || handleCancel(avail.availability_id)}>{cancelConditionForButton(avail.availability_id) ? 'Cancelling':'Cancel Appointment'}</button>
@@ -202,7 +202,7 @@ const DoctorDashboard = () => {
                           <button className={buttonClasses.remove} onClick={() => removeConditionForButton(avail.availability_id) || handleRemove(avail.availability_id)}>{removeConditionForButton(avail.availability_id) ? 'Removing Slot':'Remove Slot'}</button>}
                     
                 </div>
-                </div>)): <div>No slots found ...</div>}
+                </div>)): <div className='text-black'>{selectedDate ? 'No slots found ...':'Select Date ...'}</div>}
             </div>
             {patientDetailModal && <PatientDetailModal
               handleOnClose={handleOnClose}
